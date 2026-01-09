@@ -31,10 +31,12 @@ CREATE TABLE encounters (
                             id SERIAL PRIMARY KEY,
                             game_id INTEGER NOT NULL REFERENCES games(id),
                             location_id INTEGER NOT NULL REFERENCES locations(id),
+                            location_area_id INTEGER REFERENCES location_areas(id), 
                             pokemon_id INTEGER NOT NULL REFERENCES pokemon(id),
                             method VARCHAR(50),
                             rate_percentage INTEGER,
                             min_level INTEGER,
                             max_level INTEGER,
-                            UNIQUE (game_id, location_id, pokemon_id, method)
+
+                            UNIQUE (game_id, location_id, location_area_id, pokemon_id, method)
 );

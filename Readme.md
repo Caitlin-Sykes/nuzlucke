@@ -15,3 +15,6 @@ pre-requisities:
 
 ## To get logs
 - docker logs nuzlucke  
+
+//todo: regions (can fetch from api)
+//route

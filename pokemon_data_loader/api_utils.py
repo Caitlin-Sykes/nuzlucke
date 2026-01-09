@@ -1,132 +1,110 @@
+import logging
+
 import requests
 
-# This uses the genId variable to determine what generation to fetch data for
-# It also uses this for filtering, such as where there are differences in Pokemon's
-# Types between generations
-QUERY = """
-query GenData($genId: Int!) {
-  pokemonspecies(
-    where: { generation_id: { _lte: $genId } } 
-    order_by: { id: asc }
-  ) {
-    id
-    name
-    evolves_from_species_id
+import db_utils
+from config.queries import NUZLOCKE_VALIDATION_QUERY, GENERATION_DATA_QUERY, ENCOUNTER_QUERY, FETCH_ALL_VERSIONS_QUERY
+from errors.errors import PokeAPIError
+from config.config import POKEAPI_GRAPHQL_URL, VALID_ENCOUNTER_METHODS
 
-    pokemons {
-      id
-      name
-
-      pokemontypes(
-        where: { type: { generation_id: { _lte: $genId } } } 
-        order_by: { slot: asc }
-      ) {
-        slot
-        type {
-          name
-        }
-      }
-
-      pokemonabilities(order_by: { slot: asc }) {
-        slot
-        ability {
-          name
-        }
-      }
-    }
-  }
-}
-"""
-
-# This is used to try and filter out Pokemon that are obtainable, versus those that are not
-# For example, where a previous form is only obtainable via breeding, or by trading with another game
-# It does this by checking the encounter methods, such as whether it is obtained by running in grass, etc
-# This is changeable in the .env
-NUZLOCKE_VALIDATION_QUERY = """
-query NuzlockeCatchableForms($versionIds: [Int!]!, $validMethods: [String!]!) {
-  encounter( 
-    where: {
-      version_id: {_in: $versionIds},
-      encounterslot: {
-        encountermethod: { 
-          name: {_in: $validMethods} 
-        }
-      }
-    }
-    distinct_on: [pokemon_id] 
-    order_by: {pokemon_id: asc}
-  ) {
-    pokemon_id 
-  }
-}
-"""
+logger = logging.getLogger(__name__)
 
 
-def fetch_valid_pokemon_forms(url: str, version_ids: list, valid_methods: list) -> set:
-    """Fetches a set of unique pokemon_id (Form IDs) that are catchable via valid methods."""
-    print(f"Fetching Nuzlocke-valid catchable Forms from PokeAPI GraphQL at {url}...")
-    
+def fetch_valid_pokemon_forms(version_ids: list) -> set:
+    """Fetches a set of unique pokemon_id (Form IDs) that are catchable via valid methods.
+    :param version_ids: A list of version IDs to check against
+    :return: A set of pokemon_id values that are obtainable in some way.
+    """
+    logger.info(">> fetch_valid_pokemon_forms")
+
     variables = {
         "versionIds": version_ids,
-        "validMethods": valid_methods
+        "validMethods": VALID_ENCOUNTER_METHODS
     }
 
     response = requests.post(
-        url, 
+        POKEAPI_GRAPHQL_URL,
         json={'query': NUZLOCKE_VALIDATION_QUERY, 'variables': variables}
     )
     response.raise_for_status()
     json_data = response.json()
-    
+
     if 'errors' in json_data:
-        raise Exception(f"GraphQL Errors: {json_data['errors']}")
-        
+        raise PokeAPIError(f"GraphQL Errors: {json_data['errors']}")
+
     # Return a set of unique IDs for fast lookup
     valid_ids = {e['pokemon_id'] for e in json_data['data']['encounter']}
+    logger.debug(f"Valid Pokemon IDs: {valid_ids}")
+    logger.info("<< fetch_valid_pokemon_forms")
+
     return valid_ids
+
+
+def fetch_pokemon_data(gen_id: int):
+    """Fetches combined Pokémon data for a specific generation.
+    :param gen_id: The generation ID to fetch data for
+    :returns data about every pokemon in the generation. Abiltities, types, names, etc. """
     
-def fetch_pokemon_data(url: str, gen_id: int):
-    """Fetches combined Pokémon data for a specific generation."""
-    print(f"Fetching Gen {gen_id} data from PokeAPI GraphQL at {url}...")
-    
+    logger.info(">> fetch_pokemon_data")
+
     variables = {"genId": gen_id}
 
     response = requests.post(
-        url, 
-        json={'query': QUERY, 'variables': variables}
+        POKEAPI_GRAPHQL_URL,
+        json={'query': GENERATION_DATA_QUERY, 'variables': variables}
     )
-    
+
     response.raise_for_status()
     json_data = response.json()
-    
+
     if 'errors' in json_data:
-        raise Exception(f"GraphQL Errors: {json_data['errors']}")
-        
+        raise PokeAPIError(f"GraphQL Errors: {json_data['errors']}")
+    logger.info("<< fetch_pokemon_data")
     return json_data['data']['pokemonspecies']
 
 
-def process_abilities(raw_abilities: list, ability_map: dict):
+def process_abilities(raw_abilities: list, ability_map: dict, db_conn):
     """
-    Extracts and maps abilities based on slot (1 and 2 are standard, 3 is hidden).
-    Returns (ability_1_id, ability_2_id, hidden_ability_id)
+    Extracts and maps abilities. If an ability is missing from the map, 
+    it inserts it into the DB and updates the map.
     """
-    if not isinstance(ability_map, dict):
-        raise TypeError(f"ability_map must be dict, got {type(ability_map)}")
-    
+    logger.info(">> process_abilities")
+
+    # Store the names from the API for each slot
     ability_names = {1: None, 2: None, 3: None}
-    
+
     for a_data in raw_abilities:
-        slot = a_data['slot']
-        a_name = a_data['ability']['name'].lower()
-        
-        if slot in ability_names:
-            ability_names[slot] = a_name
-    
-    ability_1_id = ability_map.get(ability_names[1])
-    ability_2_id = ability_map.get(ability_names[2])
-    hidden_ability_id = ability_map.get(ability_names[3])
-    
-    return ability_1_id, ability_2_id, hidden_ability_id
+        slot = a_data.get('slot')
+        ability_info = a_data.get('ability')
+        if ability_info:
+            name = ability_info.get('name', '').lower()
+            flavor_text = ability_info['abilityflavortexts'][0]['flavor_text']
+            if slot in ability_names:
+                ability_names[slot] = name
+
+    def get_or_create_id(name):
+        if not name:
+            return None
+
+        # 1. Check if it exists in our dictionary
+        ability_id = ability_map.get(name)
+
+        # 2. If not found, insert into DB and update the dictionary
+        if ability_id is None:
+            logger.warning(f"Ability '{name}' not found. Inserting into DB...")
+            # We call the new upsert_ability method on the db_conn instance
+            ability_id = db_conn.upsert_ability(name, flavor_text)
+            ability_map[name] = ability_id
+
+        return ability_id
+
+    # Resolve IDs for all slots
+    a1 = get_or_create_id(ability_names[1])
+    a2 = get_or_create_id(ability_names[2])
+    a3 = get_or_create_id(ability_names[3])
+
+    logger.info("<< process_abilities")
+    return a1, a2, a3
 
 
 def process_types(raw_types: list, type_map: dict, gen_id: int):
@@ -137,27 +115,53 @@ def process_types(raw_types: list, type_map: dict, gen_id: int):
     :param gen_id: The current generation ID being processed
     Returns (type_1_id, type_2_id)
     """
+    
+    logger.info(">> process_types")
+    
     if not isinstance(type_map, dict):
         raise TypeError(f"type_map must be dict, got {type(type_map)}")
 
-    # If it doesn't return anything, and its below gen1,
+    # If it doesn't return anything, and its below gen6,
     # the type is likely fairy. The api doesn't support 
     # historical data, so we set it to normal here (the
-    # old pre-fairy type.
+    # old pre-fairy type.)
     if not raw_types and gen_id <= 5:
         return type_map.get("normal"), None
-    
+
     type_names = {1: None, 2: None}
     for t_data in raw_types:
         slot = t_data['slot']
         t_name = t_data['type']['name'].lower()
-        print(f"Slot is: {slot}")
-        print(f"Type is: {t_name}")
-      
+        logger.debug(f"Slot is: {slot}, Type is: {t_name}")
+
         if slot in type_names:
-             type_names[slot] = t_name
+            type_names[slot] = t_name
 
     type_1_id = type_map.get(type_names[1])
     type_2_id = type_map.get(type_names[2]) if type_names[2] else None
-    
+    logger.debug(f"Mapped types: Primary={type_names[1]}, Secondary={type_names[2]}")
+    logger.info("<< process_types")
     return type_1_id, type_2_id
+
+
+def fetch_version_encounters(url: str, version_ids: list, methods: list):
+    variables = {"versionIds": version_ids, "validMethods": methods}
+    response = requests.post(url, json={'query': ENCOUNTER_QUERY, 'variables': variables})
+    response.raise_for_status()
+    return response.json()['data']['pokemon']
+
+
+def fetch_all_versions():
+    """
+    Fetches all game versions from PokeAPI to populate the local games table.
+    """
+    logger.info(">> fetch_all_versions")
+    response = requests.post(POKEAPI_GRAPHQL_URL, json={'query': FETCH_ALL_VERSIONS_QUERY})
+
+    if response.status_code == 200:
+        logger.debug(f"PokeAPI response:  {response.json()}.")
+        logger.info("<< fetch_all_versions")
+        return response.json()
+    else:
+        logger.error("Failed to fetch versions from PokeAPI")
+        raise PokeAPIError(f"Failed to fetch versions: {response.status_code}")
