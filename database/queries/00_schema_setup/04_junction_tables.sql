@@ -8,6 +8,8 @@ CREATE TABLE pokemon_game_stats (
                                     ability_1_id INTEGER REFERENCES abilities(id),
                                     ability_2_id INTEGER REFERENCES abilities(id),
                                     hidden_ability_id INTEGER REFERENCES abilities(id),
+                                    min_level INTEGER,
+                                    max_level INTEGER,
 
     -- Composite UNIQUE constraint for the base stats table:
     -- A Pokémon can only have one set of stats per ruleset.

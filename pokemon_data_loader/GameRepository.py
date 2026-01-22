@@ -1,24 +1,9 @@
-import logging
-from DatabaseConfig import DatabaseConfig
+from BaseRepository import BaseRepository
 
-
-class GameRepository:
-    def __init__(self):
-        self.db = DatabaseConfig()
-        self.logger = logging.getLogger(__name__)
-
-    def get_all_from(self, table):
-        """Fetches all names and id from a provided table.
-        :param table: The table to fetch from.
-        :return: A dictionary mapping lowercase names to IDs.
-        """
-        self.logger.info(">> get_all_from")
-        self.db.cursor.execute(f"SELECT id, name FROM {table}")
-        results = self.db.cursor.fetchall()
-        self.logger.debug(f"Fetched {table} from database. Result: {results}")
-        self.logger.info("<< get_all_from")
-        return {name.lower(): region_id for region_id, name in results}
-
+class GameRepository(BaseRepository):
+    """ This class handles the games table in the database.
+    It adds the games to the games table, as well as the
+    region_id and ruleset_id columns."""
 
     def upsert_game(self, name: str, ruleset_id: int, api_version_id: int, region_id: int | None):
         """
@@ -28,7 +13,7 @@ class GameRepository:
         :param api_version_id: The api version id of the game.
         :param region_id: The region id of the game.
         """
-        self.logger.info(f">> upsert_game")
+        self.logger.debug(">> upsert_game")
 
         self.logger.debug(f"Upserting game {name} with ruleset id {ruleset_id}, api version id {api_version_id}, region id {region_id}")
         sql = """
@@ -44,9 +29,10 @@ class GameRepository:
         try:
             self.db.cursor.execute(sql, (name, ruleset_id, api_version_id, region_id))
             self.db.conn.commit()
-            self.logger.info(f"<< upsert_game")
+            self.logger.debug("<< upsert_game")
 
         except Exception as e:
                 self.logger.error(f"Failed to upsert game {name}: {e}")
+                self.logger.debug("<< upsert_game")
                 self.db.conn.rollback()
                 raise

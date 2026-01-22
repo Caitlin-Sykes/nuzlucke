@@ -6,6 +6,7 @@ import requests
 
 from utils.errors.Errors import PokeAPIError
 from utils.models import GameVersion, Config
+from utils.models.Poke_Models import FetchAllPokemon
 
 
 class PokeApiClient:
@@ -25,9 +26,10 @@ class PokeApiClient:
     def fetch_all_game_versions(self) -> List[GameVersion]:
         """
         Fetches all game versions from PokeAPI to populate the local games table.
-        :returns: JSON response of all game versions
+        :returns: JSON response of all game versions. See fetch_all_games.graphql for 
+         the expected response structure.
         """
-        self.logger.info(">> fetch_all_game_versions")
+        self.logger.debug(">> fetch_all_game_versions")
         query = self._load_query("fetch_all_games.graphql")
         
         response = requests.post(self.url, json={'query': query})
@@ -40,8 +42,44 @@ class PokeApiClient:
             # Validate using the Pydantic model 
             validated = [GameVersion(**item) for item in version_list]
 
-            self.logger.info(f"<< fetch_all_game_versions (Total: {len(validated)})")
+            self.logger.debug(f"<< fetch_all_game_versions (Total: {len(validated)})")
             self.logger.debug(f"Versions: {validated}")
+            return validated
+        else:
+            self.logger.error("Failed to fetch versions from PokeAPI")
+            raise PokeAPIError(f"Failed to fetch versions: {response.status_code}")
+
+    def fetch_all_pokemon_from_gen(self, version_ids: list[int], gen: int, valid_methods: list[str]) -> FetchAllPokemon:
+        """
+        Fetches all Pokémon from a specific generation
+        :param version_ids: List of version IDs to filter by. (ie, 1 red, 2, yellow. 
+        See Constant.py for the full map)
+        :param generation: Generation to filter by.
+        :param valid_methods: List of valid methods to filter by.
+        :returns: JSON response of all obtainable Pokémon
+        from a given generation.
+        See fetch_all_obtainable_pokemon.graphql for 
+        the expected response structure.
+        """
+        self.logger.debug(">> fetch_all_pokemon_from_gen")
+        query = self._load_query("fetch_all_obtainable_pokemon.graphql")
+        
+        payload = {
+            'query': query,
+            'variables': {
+                'genId': gen,            # For Gen 1, this is 1
+                'versionIds': version_ids,      # For Gen 1, this is [1, 2, 3]
+                'validMethods': valid_methods
+            }
+        }
+        response = requests.post(self.url, json=payload)
+
+        if response.status_code == 200:
+            raw_data = response.json()
+            validated = FetchAllPokemon(**raw_data)
+            
+            self.logger.debug(f"Versions: {validated}")
+            self.logger.debug(f"<< fetch_all_pokemon_from_gen (Total: {len(validated.data.pokemon)})")
             return validated
         else:
             self.logger.error("Failed to fetch versions from PokeAPI")

@@ -1,44 +1,5 @@
 
-FETCH_ALL_VERSIONS_QUERY = """
-    query ListAllVersions {
-        version(order_by: {id: asc}, where: {version_group_id: {_nin: [28, 29]}}) {
-        id
-        name
-        version_group_id
-        versiongroup {
-          versiongroupregions {
-            region {
-              id
-              name
-            }
-          }
-        }
-      }
-    }
-    """
-""" Fetches all the game versions and regions from PokeAPI.
-version_group_id 28 and 29 are equivalent to Japanese Red and Blue so we exclude them.
-Response looks like this:
-{
-    "data": {
-    "version": [
-      {
-        "id": 1,
-        "name": "red",
-        "version_group_id": 1,
-        "versiongroup": {
-          "versiongroupregions": [
-            {
-              "region": {
-                "id": 1,
-                "name": "kanto"
-              }
-            }
-          ]
-        }
-      },
-     ]
-"""
+
 
 
 NUZLOCKE_VALIDATION_QUERY = """
@@ -86,6 +47,31 @@ query GetVersionEncounters($versionIds: [Int!]!, $validMethods: [String!]!) {
   ) {
     id
     name
+    pokemontypes(
+        where: { type: { generation_id: { _lte: $versionIds } } } 
+        order_by: { slot: asc }
+      ) {
+        slot
+        type {
+          name
+        }
+      }
+    pokemonabilities(order_by: { slot: asc }) {
+        slot
+        ability {
+          name,
+          abilityflavortexts(
+            where: { language_id: { _eq: 9 } }
+            limit: 1
+          ) {
+            flavor_text
+          }
+        }
+      }
+    pokemonspecy 
+   {
+    evolves_from_species_id
+    } 
     encounters: encounters(
       distinct_on: [location_area_id, version_id],
       where: {
@@ -115,55 +101,7 @@ query GetVersionEncounters($versionIds: [Int!]!, $validMethods: [String!]!) {
 }
 """
 """
-This is used to fetch all the encounters for a given version and list of encounter methods.
-It also provides useful information like the minimum and maximum level of the encounter,
-as well as the location and area of the encounter.
-Response looks like this:
-{
-  "data": {
-    "pokemon": [
-      {
-        "id": 1,
-        "name": "bulbasaur",
-        "encounters": [
-          {
-            "version_id": 3,
-            "max_level": 10,
-            "min_level": 10,
-            "method": {
-              "encountermethod": {
-                "name": "gift"
-              }
-            },
-            "location_area": {
-              "id": 281,
-              "name": "cerulean-city-area",
-              "location": {
-                "id": 68,
-                "name": "cerulean-city",
-                "region_id": 1
-              }
-            }
-          },
-          {
-            "version_id": 1,
-            "max_level": 5,
-            "min_level": 5,
-            "method": {
-              "encountermethod": {
-                "name": "gift"
-              }
-            },
-            "location_area": {
-              "id": 285,
-              "name": "pallet-town-area",
-              "location": {
-                "id": 86,
-                "name": "pallet-town",
-                "region_id": 1
-              }
-            }
-          },
+
 """
 
 
