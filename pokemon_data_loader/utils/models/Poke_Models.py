@@ -58,7 +58,13 @@ class PokemonSpecies(BaseModel):
     @classmethod
     def flatten_dex_number(cls, v):
         if isinstance(v, list) and len(v) > 0:
-            return v[0].get("pokedex_number")
+            dex_entry = v[0]
+            if isinstance(dex_entry, dict) and "pokedex_number" in dex_entry:
+                return int(dex_entry["pokedex_number"])
+    
+        if isinstance(v, int):
+            return v
+    
         return 0
 
 class EncounterMethod(BaseModel):
@@ -101,8 +107,8 @@ class Pokemon(BaseModel):
     types: List[PokemonTypeSlot] = Field(alias="pokemontypes")
     pokemonabilities: List[PokemonAbilitySlot]
     pokemonspecy: PokemonSpecies
-    encounters: List[Encounter]
-
+    encounters: List[Encounter] = Field(default_factory=list)
+    
     @model_validator(mode='after')
     def split_name_and_form(self) -> 'Pokemon':
         # Common suffixes that indicate a regional form or special variant

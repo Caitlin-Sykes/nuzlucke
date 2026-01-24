@@ -25,9 +25,9 @@ if __name__ == "__main__":
     
     manager = DataManager(api_client=client, game_repo=game_repo, poke_repo=poke_repo)
 
-    # logger.info("Starting the Pokemon Game Sync...")
-    # manager.sync_pokemon_games()
-    # logger.info("Sync completed successfully!")
+    logger.info("Starting the Pokemon Game Sync...")
+    manager.sync_pokemon_games()
+    logger.info("Sync completed successfully!")
     
     logger.info("Starting the Pokemon Info Sync...")
     manager.sync_pokemon_info()

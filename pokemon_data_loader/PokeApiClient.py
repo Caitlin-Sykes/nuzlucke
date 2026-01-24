@@ -4,7 +4,7 @@ from typing import List
 
 import requests
 
-from utils.errors.Errors import PokeAPIError
+from utils.errors.Errors import PokeAPIError, logger
 from utils.models import GameVersion, Config
 from utils.models.Poke_Models import FetchAllPokemon
 
@@ -84,3 +84,35 @@ class PokeApiClient:
         else:
             self.logger.error("Failed to fetch versions from PokeAPI")
             raise PokeAPIError(f"Failed to fetch versions: {response.status_code}")
+        
+    def fetch_pokemon_data(self, placeholder_ids: list[int]):
+        """ This fetches all Pokémon placeholder data from the API
+        :param placeholder_ids: List of Pokémon ids to fetch data for."""
+        
+        self.logger.debug(">> fetch_pokemon_data")
+
+        query = self._load_query("fetch_placeholder_pokemon_data.graphql")
+
+        payload = {
+            'query': query,
+            'variables': {
+                'ids': placeholder_ids,       
+            }
+        }
+        
+        response = requests.post(self.url, json=payload)
+
+        if response.status_code == 200:
+            raw_data = response.json()
+            
+            validated = FetchAllPokemon(**raw_data)
+        
+            self.logger.debug(f"Fetched Data: {validated}")
+            self.logger.debug("<< fetch_pokemon_data")
+            return validated
+        else:
+            self.logger.error("Failed to fetch placeholder Pokemon data from PokeAPI")
+            self.logger.debug("<< fetch_pokemon_data")
+            raise PokeAPIError(f"Failed to fetch versions: {response.status_code}")
+        
+    

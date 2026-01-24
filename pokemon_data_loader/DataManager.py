@@ -5,6 +5,7 @@ import PokeApiClient
 import PokemonRepository
 from utils.Constants import group_to_ruleset, GEN_VERSION_MAP
 from utils.models import GameVersion, Config
+from utils.models.Poke_Models import Pokemon
 
 
 class DataManager:
@@ -57,7 +58,7 @@ class DataManager:
         self.logger.debug(">> sync_pokemon_info")
 
         valid_methods = Config.ruleset.valid_encounter_methods
-        
+
         for gen in Config.ruleset.target_generations:
             self.logger.debug(f"Processing generation {gen}...")
 
@@ -70,16 +71,21 @@ class DataManager:
                 version_ids=version_ids,
                 valid_methods=valid_methods
             )
-            
+
             for pokemon in all_data.data.pokemon:
                 self.logger.debug(f"--- POKÉMON: {pokemon.name.upper()} (ID: {pokemon.id}) ---")
                 self.poke_repo.upsert_pokemon_data(pokemon, gen)
                 self.logger.debug(f"Pokemon Types: {pokemon.types}")
-            
+
 
             self.logger.debug(f"Processing {len(all_data.data.pokemon)} Pokémon from generation {gen}...")
-        self.logger.debug("<< sync_pokemon_info")
 
+            # This goes back and will update all the "placeholder" pokemon with their actual details 
+            self._update_pokemon_placeholder(gen)
+            
+            self.logger.debug("<< sync_pokemon_info")
+
+   
 
     """ 
     ----------------------------------------
@@ -114,3 +120,29 @@ class DataManager:
         self.logger.debug("<< _resolve_region_name")
 
         return None
+    
+    def _update_pokemon_placeholder(self, current_gen):
+        """Orchestrates the logic that replaces
+         placeholder Pokémon with the actual Pokémon details
+         :param current_gen: The current generation to update for
+         """
+        
+        self.logger.debug(">> _update_pokemon_placeholder")
+        
+        # Gets all the placeholder Pokémon ids
+        placeholder_ids = self.poke_repo.get_placeholder_ids()
+        
+        if not placeholder_ids:
+            self.logger.info("No placeholder Pokémon found. Skipping update.")
+            self.logger.debug("<< _update_pokemon_placeholder")
+            return
+        
+        placeholder_pokemon_data = self.api_client.fetch_pokemon_data(placeholder_ids)
+        
+        # For each placeholder Pokémon, update it with the actual data
+        for pokemon in placeholder_pokemon_data.data.pokemon:
+            self.logger.debug(f"Updating placeholder Pokémon: {pokemon}")
+            self.poke_repo.upsert_pokemon_data(pokemon, current_gen)
+        
+        self.logger.debug("<< _update_pokemon_placeholder")
+

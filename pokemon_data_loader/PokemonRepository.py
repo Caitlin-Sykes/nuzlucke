@@ -1,5 +1,7 @@
 from pickle import TUPLE2
 
+from pydantic_core.core_schema import IncExDictSerSchema
+
 from BaseRepository import BaseRepository
 from utils.models.Poke_Models import Pokemon
 
@@ -43,12 +45,17 @@ class PokemonRepository(BaseRepository):
             # Inserts into the Pokémon table,
             # these are generally things that do not change per generation
             pokemon_query = """
-                            INSERT INTO pokemon (id, name, national_dex_number, slug, form_name, is_official_form, evolves_from_id)
+                            INSERT INTO pokemon (
+                                id, name, national_dex_number, slug, form_name, is_official_form, evolves_from_id
+                            )
                             VALUES (%s, %s, %s, %s, %s, %s, %s)
                             ON CONFLICT (id) DO UPDATE SET
-                                name = EXCLUDED.name,
-                                form_name = EXCLUDED.form_name,
-                                evolves_from_id = EXCLUDED.evolves_from_id;
+                                                           name = EXCLUDED.name,
+                                                           national_dex_number = EXCLUDED.national_dex_number,
+                                                           slug = EXCLUDED.slug,
+                                                           form_name = EXCLUDED.form_name,
+                                                           is_official_form = EXCLUDED.is_official_form,
+                                                           evolves_from_id = EXCLUDED.evolves_from_id; \
                             """
             self.db.cursor.execute(pokemon_query, (
                 pokemon.id,                              
@@ -98,8 +105,13 @@ class PokemonRepository(BaseRepository):
             raise
         self.logger.debug("<< upsert_pokemon_data")
     
+    def upsert_evolutions_links(self):
+        """ This function gets the placeholder ids from the db
+        and updates with the correct information
+        """
+      
     
-    """ 
+    """
      ----------------------------------------
      Helper Functions
      ----------------------------------------
@@ -140,11 +152,34 @@ class PokemonRepository(BaseRepository):
     
         t1 = self._type_map.get(types_data[0].type.name.lower())
         t2 = self._type_map.get(types_data[1].type.name.lower()) if len(types_data) > 1 else None
+
+        # get fairy and normal type ids
+        fairy_id = self._type_map.get('fairy')
+        normal_id = self._type_map.get('normal')
     
         # Handle pre-generation 6 fixes
-        if ruleset_id < 6 and (t1 == 'fairy' or t1 is None):
-            t1 = self._type_map.get('normal')
+        # (Fairy didn't exist in gen 6)
+        if ruleset_id < 6:
+            if t1 == fairy_id:
+                self.logger.debug("Retroactive change: Fairy -> Normal (Type 1)")
+                t1 = normal_id
+            if t2 == fairy_id:
+                self.logger.debug("Retroactive change: Fairy -> None (Type 2)")
+                t2 = None 
     
         self.logger.debug(f"Types: {t1}, {t2}")
         self.logger.info("<< _get_validate_types")
         return t1, t2
+
+    def get_placeholder_ids(self):
+        """Returns a list of IDs that are currently placeholders in the DB.
+        This is used for filling in placeholders created by the first initial run
+        :returns: A list of placeholder IDs."""
+        self.logger.debug(">> get_placeholder_ids")
+        query = "SELECT id FROM pokemon WHERE name LIKE '%placeholder%' OR slug LIKE '%placeholder%';"
+        self.db.cursor.execute(query)
+        ids = self.db.cursor.fetchall()
+        self.logger.debug(f"Placeholder Ids: {ids}")
+
+        self.logger.debug("<< get_placeholder_ids")
+        return [row[0] for row in ids]
