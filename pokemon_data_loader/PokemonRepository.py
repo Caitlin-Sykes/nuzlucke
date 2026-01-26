@@ -1,7 +1,3 @@
-from pickle import TUPLE2
-
-from pydantic_core.core_schema import IncExDictSerSchema
-
 from BaseRepository import BaseRepository
 from utils.models.Poke_Models import Pokemon
 
@@ -30,17 +26,7 @@ class PokemonRepository(BaseRepository):
                     self.logger.warning(
                         f"Parent species with ID {evolves_from_id} not found. Inserting placeholder record."
                     )
-                    # Insert placeholder for the parent Pokémon
-                    placeholder_query = """
-                                        INSERT INTO pokemon (id, name, national_dex_number, slug, form_name, is_official_form)
-                                        VALUES (%s, %s, %s, %s, %s, %s)
-                                        ON CONFLICT (id) DO NOTHING; \
-                                        """
-                    self.db.cursor.execute(
-                        placeholder_query,
-                        (evolves_from_id, f"placeholder-{evolves_from_id}", -1, None, None, False),
-                    )
-                    self.db.conn.commit()
+                    self.insert_placeholder_id(evolves_from_id)
                     
             # Inserts into the Pokémon table,
             # these are generally things that do not change per generation
@@ -50,12 +36,12 @@ class PokemonRepository(BaseRepository):
                             )
                             VALUES (%s, %s, %s, %s, %s, %s, %s)
                             ON CONFLICT (id) DO UPDATE SET
-                                                           name = EXCLUDED.name,
-                                                           national_dex_number = EXCLUDED.national_dex_number,
-                                                           slug = EXCLUDED.slug,
-                                                           form_name = EXCLUDED.form_name,
-                                                           is_official_form = EXCLUDED.is_official_form,
-                                                           evolves_from_id = EXCLUDED.evolves_from_id; \
+                                name = EXCLUDED.name,
+                                national_dex_number = EXCLUDED.national_dex_number,
+                                slug = EXCLUDED.slug,
+                                form_name = EXCLUDED.form_name,
+                                is_official_form = EXCLUDED.is_official_form,
+                                evolves_from_id = EXCLUDED.evolves_from_id; \
                             """
             self.db.cursor.execute(pokemon_query, (
                 pokemon.id,                              
@@ -79,15 +65,15 @@ class PokemonRepository(BaseRepository):
             # As there may be changes in types, etc., per generation
             # Example: Clefairy being normal in Gen 1, but Fairy in Gen 6
             stats_query = """
-                          INSERT INTO pokemon_game_stats (
-                              pokemon_id, ruleset_id,
-                              type_1_id, type_2_id,
-                              ability_1_id, ability_2_id, hidden_ability_id
-                          )
-                          VALUES (%s, %s, %s, %s, %s, %s, %s)
-                          ON CONFLICT (pokemon_id, ruleset_id) DO UPDATE SET
-                                                                             type_1_id = EXCLUDED.type_1_id,
-                                                                             type_2_id = EXCLUDED.type_2_id; \
+                        INSERT INTO pokemon_game_stats (
+                            pokemon_id, ruleset_id,
+                            type_1_id, type_2_id,
+                            ability_1_id, ability_2_id, hidden_ability_id
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (pokemon_id, ruleset_id) DO UPDATE SET
+                        type_1_id = EXCLUDED.type_1_id,
+                        type_2_id = EXCLUDED.type_2_id; 
                           """
 
             self.db.cursor.execute(stats_query, (
@@ -105,11 +91,6 @@ class PokemonRepository(BaseRepository):
             raise
         self.logger.debug("<< upsert_pokemon_data")
     
-    def upsert_evolutions_links(self):
-        """ This function gets the placeholder ids from the db
-        and updates with the correct information
-        """
-      
     
     """
      ----------------------------------------
@@ -183,3 +164,20 @@ class PokemonRepository(BaseRepository):
 
         self.logger.debug("<< get_placeholder_ids")
         return [row[0] for row in ids]
+
+    def insert_placeholder_id(self, placeholder_id: int):
+        """Inserts a placeholder in the db to later be corrected
+        :param placeholder_id: The ID of the Pokémon that is the placeholder
+        """
+        self.logger.debug(">> insert_placeholder_id")
+        placeholder_query = """
+            INSERT INTO pokemon (id, name, national_dex_number, slug, form_name, is_official_form)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ON CONFLICT (id) DO NOTHING; \
+        """
+        self.db.cursor.execute(
+            placeholder_query,
+            (placeholder_id, f"placeholder-{placeholder_id}", -1, None, None, True),
+        )
+        self.db.conn.commit()
+        self.logger.debug("<< insert_placeholder_id")

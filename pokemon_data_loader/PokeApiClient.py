@@ -4,7 +4,7 @@ from typing import List
 
 import requests
 
-from utils.errors.Errors import PokeAPIError, logger
+from utils.errors.Errors import PokeAPIError
 from utils.models import GameVersion, Config
 from utils.models.Poke_Models import FetchAllPokemon
 
@@ -52,9 +52,9 @@ class PokeApiClient:
     def fetch_all_pokemon_from_gen(self, version_ids: list[int], gen: int, valid_methods: list[str]) -> FetchAllPokemon:
         """
         Fetches all Pokémon from a specific generation
-        :param version_ids: List of version IDs to filter by. (ie, 1 red, 2, yellow. 
+        :param version_ids: List of version IDs to filter by. (i.e. 1 red, 2, yellow. 
         See Constant.py for the full map)
-        :param generation: Generation to filter by.
+        :param gen: Generation to filter by.
         :param valid_methods: List of valid methods to filter by.
         :returns: JSON response of all obtainable Pokémon
         from a given generation.
@@ -78,7 +78,6 @@ class PokeApiClient:
             raw_data = response.json()
             validated = FetchAllPokemon(**raw_data)
             
-            self.logger.debug(f"Versions: {validated}")
             self.logger.debug(f"<< fetch_all_pokemon_from_gen (Total: {len(validated.data.pokemon)})")
             return validated
         else:

@@ -58,5 +58,4 @@ class BaseRepository:
         except Exception as e:
             # todo: make more specific error
             self.logger.error(f"Failed to create ability {name}: {e}")
-            self.logger.debug("<< get_or_create_ability")
             return None

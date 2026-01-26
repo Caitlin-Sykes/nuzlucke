@@ -2,12 +2,23 @@
 Models for representing Pokémon data structures.
 """
 from pydantic import BaseModel, model_validator, field_validator
-from typing import List
 
 class Region(BaseModel):
     id: int
     name: str
 
+class FamilyMember(BaseModel):
+    """Represents a single relative in the evolution line."""
+    id: int
+    name: str
+
+class EvolutionChain(BaseModel):
+    """
+    Represents the 'evolutionchain' block from the GraphQL response.
+    Maps the API's 'pokemonspecies' array to a Python list.
+    """
+    pokemonspecies: List[FamilyMember]
+    
 class VersionGroupRegion(BaseModel):
     region: Region
 
@@ -53,7 +64,8 @@ class NatDexNumber(BaseModel):
 class PokemonSpecies(BaseModel):
     evolves_from_species_id: Optional[int]
     national_dex_number: int = Field(alias="pokemondexnumbers")
-
+    evolution_chain: Optional[EvolutionChain] = Field(None, alias="evolutionchain")
+    
     @field_validator("national_dex_number", mode="before")
     @classmethod
     def flatten_dex_number(cls, v):

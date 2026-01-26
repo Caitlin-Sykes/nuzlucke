@@ -64,8 +64,11 @@ class DataManager:
 
             # Gets the version ids for the generation
             version_ids = GEN_VERSION_MAP.get(gen, [])
-
-            # Gets all the games and their regions from the api
+            
+            # Keeps track of Pokémon already discovered in this gen 
+            discovered_in_gen = set()
+            
+            # Gets all the Pokémon and their regions from the api
             all_data = self.api_client.fetch_all_pokemon_from_gen(
                 gen=gen,
                 version_ids=version_ids,
@@ -75,8 +78,15 @@ class DataManager:
             for pokemon in all_data.data.pokemon:
                 self.logger.debug(f"--- POKÉMON: {pokemon.name.upper()} (ID: {pokemon.id}) ---")
                 self.poke_repo.upsert_pokemon_data(pokemon, gen)
-                self.logger.debug(f"Pokemon Types: {pokemon.types}")
-
+                discovered_in_gen.add(pokemon.id)
+                
+                # we check the family tree for its evolutions and prevolutions
+                if pokemon.pokemonspecy.evolution_chain:
+                    for evo in pokemon.pokemonspecy.evolution_chain.pokemonspecies:
+                        if evo.id not in discovered_in_gen:
+                            self.logger.debug(f"Evo ID {evo.id}, corresponding to {evo.name} not found in gen {gen}. Adding placeholder")
+                            self.poke_repo.insert_placeholder_id(evo.id)
+                            discovered_in_gen.add(evo.id)
 
             self.logger.debug(f"Processing {len(all_data.data.pokemon)} Pokémon from generation {gen}...")
 
@@ -116,9 +126,7 @@ class DataManager:
             self.logger.debug("<< _resolve_region_name")
             return overrides[version.name]
 
-        self.logger.warning(f"No region found for {version.name}. Defaulting to None.")
-        self.logger.debug("<< _resolve_region_name")
-
+        self.logger.debug(f"<< _resolve_region_name. No region found for {version.name}. Defaulting to None.")
         return None
     
     def _update_pokemon_placeholder(self, current_gen):
