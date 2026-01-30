@@ -1,5 +1,7 @@
+from psycopg2._psycopg import List
+
 from BaseRepository import BaseRepository
-from utils.models.Poke_Models import Pokemon
+from utils.models.Poke_Models import Pokemon, Encounter
 
 
 class PokemonRepository(BaseRepository):
@@ -90,13 +92,62 @@ class PokemonRepository(BaseRepository):
             self.logger.error(f"Failed to save {pokemon.name}: {e}")
             raise
         self.logger.debug("<< upsert_pokemon_data")
+
+    def upsert_encounters(self, pokemon_id: int, game_id: int, min_lvl: int, max_lvl: int, enc: "Encounter"):
+        """Saves a pre-aggregated encounter range for a specific Pokémon and Game.
+        :param pokemon_id: The ID of the Pokémon
+        :param game_id: The ID of the game
+        :param min_lvl: The minimum level for encounters
+        :param max_lvl: The maximum level for encounters
+        :param enc: The encounter object containing location and other details
+        """
+        
+        self.logger.debug(">> upsert_encounters")
+        area = enc.location_area
+        loc = area.location
     
+        # adds the location 
+        self.db.cursor.execute("""
+                               INSERT INTO locations (api_id, name, region_id)
+                               VALUES (%s, %s, %s)
+                               ON CONFLICT (api_id) DO UPDATE SET name = EXCLUDED.name
+                               RETURNING id
+                               """, (loc.id, loc.name, loc.region_id))
+        db_location_id = self.db.cursor.fetchone()[0]
     
+        # adds the location area
+        self.db.cursor.execute("""
+                               INSERT INTO location_areas (api_id, name, location_id)
+                               VALUES (%s, %s, %s)
+                               ON CONFLICT (api_id) DO UPDATE SET name = EXCLUDED.name
+                               RETURNING id
+                               """, (area.id, area.name, db_location_id))
+        db_area_id = self.db.cursor.fetchone()[0]
+    
+        # inserts the encounter levels
+        insert_query = """
+                       INSERT INTO encounters (
+                           game_id, location_id, location_area_id,
+                           pokemon_id, method, min_level, max_level
+                       ) VALUES (%s, %s, %s, %s, %s, %s, %s)
+                       ON CONFLICT (game_id, location_id, location_area_id, pokemon_id, method)
+                           DO UPDATE SET
+                                         min_level = EXCLUDED.min_level,
+                                         max_level = EXCLUDED.max_level; \
+                       """
+        self.db.cursor.execute(insert_query, (
+            game_id, db_location_id, db_area_id,
+            pokemon_id, enc.method.encountermethod.name,
+            min_lvl, max_lvl
+        ))
+        self.logger.debug("<< upsert_encounters")
+        self.db.conn.commit()
+
     """
-     ----------------------------------------
-     Helper Functions
-     ----------------------------------------
-     """
+    ----------------------------------------
+    Helper Functions
+    ----------------------------------------
+    """
     def _get_ability_id_from_slot(self, abilities, slot):
         """Helper to find or create ability ID from the slot data.
         :param: abilities: List of ability slots

@@ -61,8 +61,7 @@ class DataManager:
 
         for gen in Config.ruleset.target_generations:
             self.logger.debug(f"Processing generation {gen}...")
-
-            # Gets the version ids for the generation
+            valid_api_version_ids = GEN_VERSION_MAP.get(gen, [])            # Gets the version ids for the generation
             version_ids = GEN_VERSION_MAP.get(gen, [])
             
             # Keeps track of Pokémon already discovered in this gen 
@@ -88,6 +87,47 @@ class DataManager:
                             self.poke_repo.insert_placeholder_id(evo.id)
                             discovered_in_gen.add(evo.id)
 
+                # Filter the encounters list to only include games from THIS generation
+                relevant_encounters = [
+                    e for e in pokemon.encounters
+                    if e.version_id in valid_api_version_ids
+                ]
+    
+                if relevant_encounters:
+                    for v_id in valid_api_version_ids:
+
+                        # get all encounters grouped by game (ie, red, yellow..)
+                        game_specific = [e for e in relevant_encounters if e.version_id == v_id]
+                    
+                        if game_specific:
+                            
+                            # the api returns multiple entries for the same pokemon for the same area
+                            # so we group them
+                            summary = {}
+                            for enc in game_specific:
+                                key = (enc.location_area.id, enc.method.encountermethod.name)
+                    
+                                if key not in summary:
+                                    summary[key] = {
+                                        "min": enc.min_level,
+                                        "max": enc.max_level,
+                                        "obj": enc
+                                    }
+                                else:
+                                    # we get the minimum and maximum level 
+                                    summary[key]["min"] = min(summary[key]["min"], enc.min_level)
+                                    summary[key]["max"] = max(summary[key]["max"], enc.max_level)
+                    
+                            # then we insert them
+                            for data in summary.values():
+                                self.poke_repo.upsert_encounters(
+                                    pokemon.id,
+                                    v_id,
+                                    data["min"],
+                                    data["max"],
+                                    data["obj"]
+                                )
+                                
             self.logger.debug(f"Processing {len(all_data.data.pokemon)} Pokémon from generation {gen}...")
 
             # This goes back and will update all the "placeholder" pokemon with their actual details 
