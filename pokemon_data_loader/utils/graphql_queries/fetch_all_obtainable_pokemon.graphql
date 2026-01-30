@@ -1,0 +1,205 @@
+#Fetches all pokemon that are obtainable via the methods obtained in the toml
+#Also gets their abilities, types, flavour text, and levels etc
+#and their nat dex number
+query GetAllObtainablePokemon($versionIds: [Int!]!, $validMethods: [String!]!, $genId: Int!) {
+    pokemon: pokemon(
+        where: {
+            encounters: { version_id: { _in: $versionIds } }
+        }
+    ) {
+        id
+        name
+        pokemontypes(
+            where: { type: { generation_id: { _lte: $genId } } }
+            order_by: { slot: asc }
+        ) {
+            slot
+            type {
+                name
+            }
+        }
+        pokemonabilities(order_by: { slot: asc }) {
+            slot
+            ability {
+                name,
+                abilityflavortexts(
+                    where: { language_id: { _eq: 9 } }
+                    limit: 1
+                ) {
+                    flavor_text
+                }
+            }
+        }
+        pokemonspecy
+        {
+            evolves_from_species_id
+            pokemondexnumbers(where: {pokedex: {name: {_eq: "national"}}}) {
+                pokedex_number
+            }
+            evolutionchain {
+                pokemonspecies(where: {generation_id: {_eq: $genId}}) {
+                    id
+                    name
+                }
+            }
+        }
+        encounters: encounters(
+            distinct_on: [location_area_id, version_id],
+            where: {
+                version_id: { _in: $versionIds },
+                encounterslot: {
+                    encountermethod: { name: { _in: $validMethods } }
+                }
+            }
+        ) {
+            version_id
+            max_level
+            min_level
+            method: encounterslot {
+                encountermethod { name }
+            }
+            location_area: locationarea {
+                id
+                name
+                location: location {
+                    id
+                    name
+                    region_id
+                }
+            }
+        }
+    }
+}
+
+#This is used to fetch all the encounters for a given version and list of encounter methods.
+#It also provides useful information like the minimum and maximum level of the encounter,
+#as well as the location and area of the encounter.
+#Response looks like this:
+#{
+#  "data": {
+#    "pokemon": [
+#      {
+#        "id": 1,
+#        "name": "bulbasaur",
+#        "pokemontypes": [
+#          {
+#            "slot": 1,
+#            "type": {
+#              "name": "grass"
+#            }
+#          },
+#          {
+#            "slot": 2,
+#            "type": {
+#              "name": "poison"
+#            }
+#          }
+#        ],
+#        "pokemonabilities": [
+#          {
+#            "slot": 1,
+#            "ability": {
+#              "name": "overgrow",
+#              "abilityflavortexts": [
+#                {
+#                  "flavor_text": "Ups GRASS moves in a pinch."
+#                }
+#              ]
+#            }
+#          },
+#          {
+#            "slot": 3,
+#            "ability": {
+#              "name": "chlorophyll",
+#              "abilityflavortexts": [
+#                {
+#                  "flavor_text": "Raises SPEED in sunshine."
+#                }
+#              ]
+#            }
+#          }
+#        ],
+#        "pokemonspecy": {
+#          "evolves_from_species_id": null,
+#          "pokemondexnumbers": [
+#            {
+#              "pokedex_number": 1
+#            }
+#          ],
+#          "evolutionchain": {
+#            "pokemonspecies": [
+#              {
+#                "id": 1,
+#                "name": "bulbasaur"
+#              },
+#              {
+#                "id": 3,
+#                "name": "venusaur"
+#              },
+#              {
+#                "id": 2,
+#                "name": "ivysaur"
+#              }
+#            ]
+#          }
+#        },
+#        "encounters": [
+#          {
+#            "version_id": 3,
+#            "max_level": 10,
+#            "min_level": 10,
+#            "method": {
+#              "encountermethod": {
+#                "name": "gift"
+#              }
+#            },
+#            "location_area": {
+#              "id": 281,
+#              "name": "cerulean-city-area",
+#              "location": {
+#                "id": 68,
+#                "name": "cerulean-city",
+#                "region_id": 1
+#              }
+#            }
+#          },
+#          {
+#            "version_id": 1,
+#            "max_level": 5,
+#            "min_level": 5,
+#            "method": {
+#              "encountermethod": {
+#                "name": "gift"
+#              }
+#            },
+#            "location_area": {
+#              "id": 285,
+#              "name": "pallet-town-area",
+#              "location": {
+#                "id": 86,
+#                "name": "pallet-town",
+#                "region_id": 1
+#              }
+#            }
+#          },
+#          {
+#            "version_id": 2,
+#            "max_level": 5,
+#            "min_level": 5,
+#            "method": {
+#              "encountermethod": {
+#                "name": "gift"
+#              }
+#            },
+#            "location_area": {
+#              "id": 285,
+#              "name": "pallet-town-area",
+#              "location": {
+#                "id": 86,
+#                "name": "pallet-town",
+#                "region_id": 1
+#              }
+#            }
+#          }
+#        ]
+#      },

@@ -2,7 +2,6 @@
 Models for representing Pokémon data structures.
 """
 from pydantic import BaseModel, model_validator, field_validator
-
 class Region(BaseModel):
     id: int
     name: str

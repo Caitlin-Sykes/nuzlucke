@@ -8,8 +8,6 @@ CREATE TABLE pokemon_game_stats (
                                     ability_1_id INTEGER REFERENCES abilities(id),
                                     ability_2_id INTEGER REFERENCES abilities(id),
                                     hidden_ability_id INTEGER REFERENCES abilities(id),
-                                    min_level INTEGER,
-                                    max_level INTEGER,
 
     -- Composite UNIQUE constraint for the base stats table:
     -- A Pokémon can only have one set of stats per ruleset.
@@ -36,9 +34,7 @@ CREATE TABLE encounters (
                             location_area_id INTEGER REFERENCES location_areas(id), 
                             pokemon_id INTEGER NOT NULL REFERENCES pokemon(id),
                             method VARCHAR(50),
-                            rate_percentage INTEGER,
                             min_level INTEGER,
                             max_level INTEGER,
-
                             UNIQUE (game_id, location_id, location_area_id, pokemon_id, method)
 );

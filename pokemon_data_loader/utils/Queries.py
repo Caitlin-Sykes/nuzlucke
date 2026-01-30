@@ -23,7 +23,7 @@ query NuzlockeCatchableForms($versionIds: [Int!]!, $validMethods: [String!]!) {
 """This is used to try and filter out Pokemon that are obtainable, versus those that are not
 For example, where a previous form is only obtainable via breeding, or by trading with another game
 It does this by checking the encounter methods, such as whether it is obtained by running in grass, etc
-This list is changeable in the .env
+This list is changeable in the .env.example
 
 Response looks like this:
 {

@@ -1,13 +1,15 @@
 services:
   db:
-    build: .
+    build:
+      context: ..
+      dockerfile: ./database/Dockerfile
     container_name: nuzlucke
     restart: always
     env_file:
       - ../pokemon_data_loader/.env
     volumes:
       - nuzlucke:/var/lib/postgresql
-      - ./queries:/docker-entrypoint-initdb.d
+      - ../database/queries:/docker-entrypoint-initdb.d
       - ../pokemon_data_loader:/app/src
     ports:
       - "5432:5432"

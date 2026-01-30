@@ -1,0 +1,33 @@
+#Fetches all the game versions and regions from PokeAPI.
+#version_group_id 28 and 29 are equivalent to Japanese Red and Blue so we exclude them.
+query ListAllVersions {
+    version(order_by: {id: asc}, where: {version_group_id: {_nin: [28, 29]}}) {
+        id
+        name
+        version_group_id
+        versiongroup {
+            versiongroupregions {
+                region {
+                    id
+                    name
+                }
+            }
+        }
+    }
+}
+
+# Expected Response Structure:
+# {
+#   "data": {
+#     "version": [
+#       {
+#         "id": 1,
+#         "name": "red",
+#         "version_group_id": 1,
+#         "versiongroup": {
+#           "versiongroupregions": [{"region": {"id": 1, "name": "kanto"}}]
+#         }
+#       }
+#     ]
+#   }
+# }
