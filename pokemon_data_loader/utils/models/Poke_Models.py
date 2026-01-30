@@ -1,7 +1,9 @@
 """
 Models for representing Pokémon data structures.
 """
-from pydantic import BaseModel, model_validator, field_validator
+from typing import List, Optional
+
+from pydantic import BaseModel, Field, model_validator, field_validator
 class Region(BaseModel):
     id: int
     name: str
@@ -33,9 +35,6 @@ class GameVersion(BaseModel):
     name: str
     version_group_id: int
     versiongroup: VersionGroup
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
 
 # --- Nested Helper Models ---
 
