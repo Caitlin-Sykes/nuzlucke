@@ -2,7 +2,7 @@
 url = "https://graphql.pokeapi.co/v1beta2"
 
 [database]
-# pydantic will pull these from .env.example if left blank here
+# pydantic will pull these from .env if left blank here
 
 [ruleset]
 # these are valid ways that encounters will be included. 
