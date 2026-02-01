@@ -1,0 +1,31 @@
+1. The api does not support historical data.
+    so in gen 6 example, Clefairy became fairy type, before that it was normal pokemon.
+    the api will not return "normal" for Clefairy even if we filter by pokemon
+    
+    solution: we make education guesses for these Pokemon, as there has been very
+    few changes in their types. through the years.
+    ie, if first type is fairy, and we are before gen 6, it probably was a normal
+    type.
+    
+    if it was a steel type and we are before gen 2, we leave it blank. it likely
+    didn't change
+    
+    i checked the use cases i could think of and noticed the pattern
+    
+2. some pokemon had evolutions and pre-evolutions that appear after the first generation.
+    pre-evolution is a foreign key in the database, so needs to be added. we add a placeholder
+    for those missing pokemon to avoid a data integrity issue, then once all the pokemon for that
+    generation are added, we go back over and update the placeholders with the correct pokemon
+    information.
+    
+3. I wanted to have a table to store the intended progression of each Pokemon, but I can't
+fetch that from the API.
+        
+        solution:
+            I take a few factors:
+                - average level of all the walking pokemon per area
+                - i have a rough template of the pokemon progression per area based on level
+                - i manually map a few key encounters and store them in the milestone table
+                
+4. Each game has multiple release dates dependent on region
+    solution: a date field for each region and the front-end will decide which one to display

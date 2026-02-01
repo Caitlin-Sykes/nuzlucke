@@ -6,7 +6,7 @@ url = "https://graphql.pokeapi.co/v1beta2"
 
 [ruleset]
 # these are valid ways that encounters will be included. 
-# for example, a pokémon that is only available by
+# for example, a Pokémon that is only available by
 # trading from another game would not appear
 valid_encounter_methods = [
     "walk", "surf", "rock-smash", "old-rod", "good-rod", "super-rod",
@@ -20,9 +20,9 @@ valid_encounter_methods = [
     "berry-piles", "npc-trade", "sos-from-bubbling-spot"
 ]
 
-# this is what generations to target. i.e. only pokémon from gen 1, 2, and 3 
+# this is what generations to target. i.e. only Pokémon from gen 1, 2, and 3 
 # would be in the database.
-target_generations = [1, 2, 3]
+target_generations = [1, 2, 3,4,5,6,7,8,9]
 
 [logging]
 logging_level = "DEBUG"

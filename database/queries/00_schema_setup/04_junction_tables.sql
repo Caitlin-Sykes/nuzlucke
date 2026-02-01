@@ -14,18 +14,6 @@ CREATE TABLE pokemon_game_stats (
                                     UNIQUE (pokemon_id, ruleset_id)
 );
 
--- GAME PROGRESSION
--- This controls the frontend "Order of Events" screen.
-CREATE TABLE game_progression (
-                                  id SERIAL PRIMARY KEY,
-                                  game_id INTEGER NOT NULL REFERENCES games(id),
-                                  location_id INTEGER NOT NULL REFERENCES locations(id),
-                                  visit_order INTEGER NOT NULL,
-                                  display_label VARCHAR(100),
-                                  level_cap INTEGER,
-                                  UNIQUE (game_id, visit_order)
-);
-
 -- ENCOUNTERS
 CREATE TABLE encounters (
                             id SERIAL PRIMARY KEY,

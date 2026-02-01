@@ -1,6 +1,6 @@
 import psycopg2
 
-from utils.models import Config
+from pokemon_data_loader.utils.models import Config
 
 
 class DatabaseConfig:
@@ -21,7 +21,7 @@ class DatabaseConfig:
                 cls._instance.cursor = cls._instance.conn.cursor()
                 print("Database connection established.")
             except psycopg2.Error as e:
-                print(f"Error connecting to PostgreSQL: {e}")
+                print(f"Error connecting to PostgresSQL: {e}")
                 cls._instance = None  
                 raise
         return cls._instance

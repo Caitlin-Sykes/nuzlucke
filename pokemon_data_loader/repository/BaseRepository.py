@@ -1,7 +1,8 @@
 import logging
 from typing import Any
 
-from DatabaseConfig import DatabaseConfig
+from pokemon_data_loader.DatabaseConfig import DatabaseConfig
+from pokemon_data_loader.utils.errors.Errors import FailedToCreateAbilityError
 
 
 class BaseRepository:
@@ -39,7 +40,7 @@ class BaseRepository:
             self.logger.debug("<< get_or_create_ability")
             return self._ability_map[name_lower]
 
-        # If its not in the db, add it
+        # If it's not in the db, add it
         self.logger.debug(f"Ability '{name}' not found. Adding to database...")
         try:
             query = """
@@ -55,7 +56,6 @@ class BaseRepository:
             self._ability_map[name_lower] = new_id
             self.logger.debug("<< get_or_create_ability")
             return new_id
-        except Exception as e:
-            # todo: make more specific error
-            self.logger.error(f"Failed to create ability {name}: {e}")
+        except Exception:
+            raise FailedToCreateAbilityError
             return None

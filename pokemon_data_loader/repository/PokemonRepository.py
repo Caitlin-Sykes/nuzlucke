@@ -1,8 +1,5 @@
-from psycopg2._psycopg import List
-
-from BaseRepository import BaseRepository
-from utils.models.Poke_Models import Pokemon, Encounter
-
+from .BaseRepository import BaseRepository
+from pokemon_data_loader.utils.models.Poke_Models import Pokemon, Encounter
 
 class PokemonRepository(BaseRepository):
     def upsert_pokemon_data(self, pokemon: "Pokemon", ruleset_id: int):
@@ -142,7 +139,7 @@ class PokemonRepository(BaseRepository):
         ))
         self.logger.debug("<< upsert_encounters")
         self.db.conn.commit()
-
+    
     """
     ----------------------------------------
     Helper Functions
