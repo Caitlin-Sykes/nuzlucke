@@ -21,6 +21,8 @@ pre-requisities:
   - applies to milestone teams
   - and milestones
 - add romhacks
+- make custom covers of some variety
+- make front end look better
 - check for more overrides
 
 ## Credits
