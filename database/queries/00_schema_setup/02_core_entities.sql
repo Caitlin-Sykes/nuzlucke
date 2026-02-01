@@ -4,7 +4,7 @@ CREATE TABLE pokemon (
                         national_dex_number INTEGER NOT NULL,
                         name VARCHAR(50) NOT NULL,
                         slug VARCHAR(50),
-                        form_name VARCHAR(50) NOT NULL DEFAULT 'Base',
+                        form_name VARCHAR(50) DEFAULT NULL,
                         is_official_form BOOLEAN DEFAULT TRUE,
                         evolves_from_id INTEGER REFERENCES pokemon(id)
 );

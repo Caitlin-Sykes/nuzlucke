@@ -1,0 +1,29 @@
+[api]
+url = "https://graphql.pokeapi.co/v1beta2"
+
+[database]
+# pydantic will pull these from .env if left blank here
+
+[ruleset]
+# these are valid ways that encounters will be included. 
+# for example, a Pokémon that is only available by
+# trading from another game would not appear
+valid_encounter_methods = [
+    "walk", "surf", "rock-smash", "old-rod", "good-rod", "super-rod",
+    "gift", "devon-scope", "gift-egg", "seaweed", "only-one",
+    "feebas-tile-fishing", "headbutt", "dark-grass", "grass-spots",
+    "cave-spots", "bridge-spots", "super-rod-spots", "surf-spots",
+    "yellow-flowers", "purple-flowers", "red-flowers", "rough-terrain",
+    "pokeflute", "headbutt-low", "headbutt-normal", "headbutt-high",
+    "squirt-bottle", "wailmer-pail", "seaweed", "roaming-grass",
+    "roaming-water", "island-scan", "sos-encounter", "bubbling-spots",
+    "berry-piles", "npc-trade", "sos-from-bubbling-spot"
+]
+
+# this is what generations to target. i.e. only Pokémon from gen 1, 2, and 3 
+# would be in the database.
+target_generations = [1, 2, 3,4,5,6,7,8,9]
+
+[logging]
+logging_level = "DEBUG"
+logging_file_name = "nuzlucke.log"

@@ -1,0 +1,82 @@
+#Fetches all the missing pokemon data for the placeholder pokemon in the db"""
+query GetPlaceholderData($ids: [Int!]!) {
+ pokemon(where: {id: {_in: $ids}}) {
+    id
+    name
+    pokemontypes: pokemontypes {
+        slot
+        type {
+            name
+      }
+    }
+    pokemonabilities: pokemonabilities {
+      slot
+      ability: ability {
+        name
+        abilityflavortexts: abilityflavortexts(where: {language_id: {_eq: 9}}, limit: 1) {
+          flavor_text
+        }
+      }
+    }
+    pokemonspecy: pokemonspecy {
+        pokemondexnumbers(where: {pokedex: {name: {_eq: "national"}}}) {
+            pokedex_number
+        }
+        evolves_from_species_id
+    }
+  }
+}
+#This is used to fill out the missing data for the placeholder pokemon
+#These placeholder pokemon are usually the pre-evolution, or the evolution of the pokemon
+#inserted in the sync_pokemon_info class
+#Response looks like this:
+# {
+#   "data": {
+#     "pokemon": [
+#       {
+#         "id": 1,
+#         "name": "bulbasaur",
+#         "pokemontypes": [
+#           {
+#             "type": {
+#               "name": "grass"
+#             }
+#           },
+#           {
+#             "type": {
+#               "name": "poison"
+#             }
+#           }
+#         ],
+#         "pokemonabilities": [
+#           {
+#             "slot": 1,
+#             "ability": {
+#               "name": "overgrow",
+#               "abilityflavortexts": [
+#                 {
+#                   "flavor_text": "Ups GRASS moves in a pinch."
+#                 }
+#               ]
+#             }
+#           },
+#           {
+#             "slot": 3,
+#             "ability": {
+#               "name": "chlorophyll",
+#               "abilityflavortexts": [
+#                 {
+#                   "flavor_text": "Raises SPEED in sunshine."
+#                 }
+#               ]
+#             }
+#           }
+#         ],
+#         "pokemonspecy": {
+#           "national_dex_number": 1,
+#           "evolves_from_species_id": null
+#         }
+#       }
+#     ]
+#   }
+# }

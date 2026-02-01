@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Git ###
+.env
+**/.env
+/pokemon_data_loader/nuzlucke.log
