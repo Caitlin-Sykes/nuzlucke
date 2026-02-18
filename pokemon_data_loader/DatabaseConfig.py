@@ -1,6 +1,6 @@
 import psycopg2
 
-from pokemon_data_loader.utils.models import Config
+from utils.models import Config
 
 
 class DatabaseConfig:

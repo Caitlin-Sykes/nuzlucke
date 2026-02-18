@@ -4,9 +4,9 @@ from typing import List
 
 import requests
 
-from pokemon_data_loader.utils.errors.Errors import PokeAPIError
-from pokemon_data_loader.utils.models import GameVersion, Config
-from pokemon_data_loader.utils.models.Poke_Models import FetchAllPokemon
+from utils.errors.Errors import PokeAPIError
+from utils.models import GameVersion, Config
+from utils.models.Poke_Models import FetchAllPokemon
 
 
 class PokeApiClient:

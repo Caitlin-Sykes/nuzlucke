@@ -1,11 +1,11 @@
 import logging
 
-from pokemon_data_loader.PokeApiClient import PokeApiClient
-from pokemon_data_loader.repository import PokemonRepository, GameRepository
-from pokemon_data_loader.repository.EncounterRepository import EncounterRepository
-from pokemon_data_loader.utils.Constants import GROUP_TO_RULESET, GEN_VERSION_MAP
-from pokemon_data_loader.utils.models import GameVersion, Config
-from pokemon_data_loader.utils.models.Poke_Models import Pokemon
+from PokeApiClient import PokeApiClient
+from repository import PokemonRepository, GameRepository
+from repository.EncounterRepository import EncounterRepository
+from utils.Constants import GROUP_TO_RULESET, GEN_VERSION_MAP
+from utils.models import GameVersion, Config
+from utils.models.Poke_Models import Pokemon
 
 
 def _filter_relevant_encounters(valid_api_version_ids, pokemon):

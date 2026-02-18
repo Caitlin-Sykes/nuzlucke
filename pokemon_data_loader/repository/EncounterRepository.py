@@ -1,5 +1,5 @@
 from .BaseRepository import BaseRepository
-from pokemon_data_loader.utils.Constants import SURF_MILESTONE
+from utils.Constants import SURF_MILESTONE
 
 
 class EncounterRepository(BaseRepository):

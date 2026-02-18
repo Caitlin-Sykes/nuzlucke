@@ -1,10 +1,10 @@
 import logging
 import os
 
-from pokemon_data_loader.DataManager import DataManager
-from pokemon_data_loader.repository import GameRepository,PokemonRepository,EncounterRepository
-from pokemon_data_loader.PokeApiClient import PokeApiClient
-from pokemon_data_loader.utils.models import Config
+from DataManager import DataManager
+from repository import GameRepository,PokemonRepository,EncounterRepository
+from PokeApiClient import PokeApiClient
+from utils.models import Config
 
 def setup_logging():
     base_dir = os.path.dirname(os.path.abspath(__file__))

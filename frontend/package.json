@@ -12,11 +12,12 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@tsconfig/svelte": "^5.0.6",
-    "@types/node": "^24.10.1",
-    "svelte": "^5.43.8",
-    "svelte-check": "^4.3.4",
+    "@types/node": "^25.2.3",
+    "svelte": "^5.51.2",
+    "svelte-check": "^4.4.0",
     "typescript": "~5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "@inlang/paraglide-js": "^2.12.0"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"

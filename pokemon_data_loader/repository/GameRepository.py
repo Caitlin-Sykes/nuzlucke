@@ -1,5 +1,5 @@
 from .BaseRepository import BaseRepository
-from pokemon_data_loader.utils.Constants import GAME_METADATA
+from utils.Constants import GAME_METADATA
 
 
 class GameRepository(BaseRepository):

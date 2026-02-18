@@ -5,7 +5,10 @@ from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 from typing import Literal
-load_dotenv()
+if not os.getenv("DOCKER_CONTAINER"):
+    env_path = Path(__file__).resolve().parents[1] / ".env"
+    if env_path.exists():
+        load_dotenv(dotenv_path=env_path)
 
 class ApiConfig(BaseModel):
     """Schema for external API endpoints and settings."""
@@ -39,13 +42,12 @@ class Settings(BaseModel):
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
 
 def load_settings() -> Settings:
-    """
-    Loads configuration from config.toml and environment variables.
-    Pydantic handles the merging and validation.
-    """
-    toml_path = Path(__file__).resolve().parents[2] / "config.toml"
     conf_dict = {}
-
+    toml_path = Path(os.getcwd()) / "config.toml"
+        
+    if not toml_path.exists():
+        toml_path = Path(__file__).resolve().parents[2] / "config.toml"
+            
     if toml_path.exists():
         with open(toml_path, "rb") as f:
             conf_dict = tomllib.load(f)
@@ -53,9 +55,7 @@ def load_settings() -> Settings:
     try:
         return Settings(**conf_dict)
     except ValidationError as e:
-        print(f"Configuration Error detected in config.toml: {e}")
-        print("Falling back to default settings and environment variables.")
-        # Return default Settings if TOML is malformed
+        print(f"Configuration Error: {e}")
         return Settings()
-# Settings.model_rebuild()
+
 Config = load_settings()

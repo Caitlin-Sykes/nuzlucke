@@ -1,8 +1,8 @@
 import logging
 from typing import Any
 
-from pokemon_data_loader.DatabaseConfig import DatabaseConfig
-from pokemon_data_loader.utils.errors.Errors import FailedToCreateAbilityError
+from DatabaseConfig import DatabaseConfig
+from utils.errors.Errors import FailedToCreateAbilityError
 
 
 class BaseRepository:

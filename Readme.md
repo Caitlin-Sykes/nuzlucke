@@ -1,21 +1,43 @@
-## To Create the DB
+## Table of Contents
+-tbd
 
-pre-requisities:
-- in the pokemon_dataload_folder, open the `config.toml` file. 
+## Prerequisites:
+### For Production
+- Docker Desktop
+
+### For Development
+- Python 3.14
+- Node (I use 25)
+- Java 21
+
+##
+[NOTE! Please see #Configuration before running if you want to see configuration options]
+
+## Build Steps
+### Prod
+  - in the root folder, run ```docker compose up --build```
+
+### Local Development
+
+  #### DB Development
+  - `docker compose --profile db up`
+
+  #### Backend Development
+ - `docker compose --profile backend up`
+
+  #### UI Development
+  - `docker compose --profile ui up`
+  - 
+## Configuration
+- in the pokemon_dataload_folder, open the `config.toml` file.
   - whatever generations you want to load into your db, add them to the GENERATIONS_TO_LOAD variable, like so.  ```GENERATIONS_TO_LOAD=[1,2]```
-- start docker-desktop, or run under docker-linux
-- cd into db folder
-- run docker-compose up
 
-
-## To Create the Backend
-
-## To Create the Frontend
+- in the .env file
+  - POSTGRES_USER - change the user
+  - POSTGRES_PASSWORD - change the password for the db
 
 
 ## TODO:
-- backend
-- frontend
 - seed more data, 
   - only done up to gen 4 right now
   - applies to milestone teams
@@ -24,6 +46,13 @@ pre-requisities:
 - make custom covers of some variety
 - make front end look better
 - check for more overrides
+- tidy up readmes
+- ci/cd pipelines
+- lock down python user for db
+- FIX 05_populate_milestone_teams_table.sql
+- look into python optimisation
+- java logger
+- kanban
 
 ## Credits
 - [PokeAPI](https://pokeapi.co/) - for the data I populate the db with
