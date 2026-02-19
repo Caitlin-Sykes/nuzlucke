@@ -11,6 +11,7 @@
     <groupId>org.csykes</groupId>
     <artifactId>Nuzlucke</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    
     <name>Nuzlucke</name>
     <description>Nuzlucke is an app designed to track your nuzlocking progress through various official and unofficial games</description>
     <url/>
@@ -21,13 +22,14 @@
         <developer/>
     </developers>
     <scm>
-        <connection/>
-        <developerConnection/>
-        <tag/>
-        <url/>
+        <connection>scm:git:https://github.com/Caitlin-Sykes/nuzlucke.git</connection>
+        <developerConnection>scm:git:git@github.com:Caitlin-Sykes/nuzlucke.git</developerConnection>
+        <url>https://github.com/Caitlin-Sykes/nuzlucke</url>
+        <tag>HEAD</tag>
     </scm>
     <properties>
         <java.version>21</java.version>
+        <sonar.organization>caitlin-sykes</sonar.organization>
     </properties>
     <dependencies>
         <dependency>

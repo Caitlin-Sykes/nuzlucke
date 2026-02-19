@@ -1,0 +1,92 @@
+name: Lint Code Base
+on:
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  ui-lint:
+    name: UI-Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.branch || null }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          cache: 'npm'
+
+      - name: Annotate UI Code Linting Results
+        run: npm ci
+      - uses: reviewdog/action-eslint@2fee6dd72a5419ff4113f694e2068d2a03bb35dd # v1.33.2
+        with:
+            reporter: github-pr-review
+            eslint_flags: "--ext .ts,.svelte --config eslint.config.js src/"
+            fail_level: "error"
+            workdir: 'frontend'
+            filter_mode: diff_context
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: reviewdog/action-stylelint@dd2b435cc6a7c82705307a9dee740c9bbaa10411 # v1.30.2
+        with:
+          reporter: github-pr-review # Change reporter.
+          stylelint_input: 'src/**/*.{css}'
+          stylelint_flags: '--config stylelint.mjs'
+          workdir: 'frontend'
+          fail_level: "error"
+          filter_mode: diff_context
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
+  backend-java-lint:
+    name: Backend Java Scan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: SonarQube Scan (Java)
+        uses: SonarSource/sonarqube-scan-action@v5
+        reporter: github-pr-review
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          projectBaseDir: backend/    
+
+    backend-python-lint:
+      name: Backend Python Scan
+      runs-on: ubuntu-latest
+      permissions:
+        contents: read
+        pull-requests: write
+        checks: write
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+
+        - name: SonarQube Scan (Python)
+          uses: SonarSource/sonarqube-scan-action@v5
+          reporter: github-pr-review # Change reporter.
+          env:
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            projectBaseDir: pokemon_data_loader/
+  

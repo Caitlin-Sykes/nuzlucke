@@ -2,7 +2,7 @@ import logging
 import os
 
 from DataManager import DataManager
-from repository import GameRepository,PokemonRepository,EncounterRepository
+from repository import GameRepository, PokemonRepository, EncounterRepository, SyncStateRepository
 from PokeApiClient import PokeApiClient
 from utils.models import Config
 
@@ -22,7 +22,10 @@ if __name__ == "__main__":
     game_repo = GameRepository()
     poke_repo = PokemonRepository()
     encounter_repo = EncounterRepository()
-    manager = DataManager(api_client=client, game_repo=game_repo, poke_repo=poke_repo, encounter_repo=EncounterRepository())
+    sync_repo = SyncStateRepository()
+    
+    manager = DataManager(api_client=client, game_repo=game_repo, poke_repo=poke_repo, encounter_repo=encounter_repo, sync_repo=sync_repo)
+
 
     logger.info("Starting the Pokemon Game Sync...")
     manager.sync_pokemon_games()

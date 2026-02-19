@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from pydantic import BaseModel, Field, ValidationError
 from typing import Literal
 if not os.getenv("DOCKER_CONTAINER"):
-    env_path = Path(__file__).resolve().parents[1] / ".env"
+    env_path = Path(__file__).resolve().parents[3] / ".env"
+    print(env_path)
     if env_path.exists():
         load_dotenv(dotenv_path=env_path)
 

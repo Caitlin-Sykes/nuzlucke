@@ -45,7 +45,7 @@ class GameRepository(BaseRepository):
         
         self.logger.debug(">> insert_game_metadata")
         CREATOR = "Game Freak"
-        RIGHTS = "© Nintendo/Creatures Inc./GAME FREAK inc."
+        RIGHTS = "Nintendo/Creatures Inc./GAME FREAK inc."
         CREDITS = "Source: Bulbapedia / Wiki Commons"
     
         sql = """

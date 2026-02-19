@@ -1,7 +1,7 @@
 import logging
 
 from PokeApiClient import PokeApiClient
-from repository import PokemonRepository, GameRepository
+from repository import PokemonRepository, GameRepository, SyncStateRepository
 from repository.EncounterRepository import EncounterRepository
 from utils.Constants import GROUP_TO_RULESET, GEN_VERSION_MAP
 from utils.models import GameVersion, Config
@@ -43,11 +43,12 @@ def _filter_game_specific_encounters(relevant_encounters, version_id):
 
 class DataManager:
     """Manages data synchronisation and retrieval for Pokémon game data."""
-    def __init__(self, api_client: PokeApiClient, game_repo: GameRepository, poke_repo: PokemonRepository, encounter_repo: EncounterRepository):
+    def __init__(self, api_client: PokeApiClient, game_repo: GameRepository, poke_repo: PokemonRepository, encounter_repo: EncounterRepository, sync_repo: SyncStateRepository):
         self.api_client = api_client
         self.game_repo = game_repo
         self.poke_repo = poke_repo
         self.encounter_repo = encounter_repo
+        self.sync_repo = sync_repo
         self.logger = logging.getLogger(__name__)
 
     def sync_pokemon_games(self):
@@ -58,32 +59,48 @@ class DataManager:
 
         self.logger.debug(">> sync_pokemon_games")
 
-        # Gets all the games and their regions from the api
-        games = self.api_client.fetch_all_game_versions()
+        if self.sync_repo.is_completed('games'):
+            self.logger.info("Games already synced. Skipping.")
+            return
 
-        # Gets all the pre-existing regions from the db.
-        region_map = self.game_repo.get_all_from('regions')
+        # Mark the start of the sync for the games component
+        self.sync_repo.mark_start('games')
 
-        for game in games:
-            # Get the region name from the api response.
-            region_name = self._resolve_region_name(game)
+        try:
+            # Gets all the games and their regions from the api
+            games = self.api_client.fetch_all_game_versions()
 
-            # Gets the id of the region by looking up the region from the response to the list in the db
-            region_id = region_map.get(region_name) if region_name else None
+            # Gets all the pre-existing regions from the db.
+            region_map = self.game_repo.get_all_from('regions')
 
-            # Gets the ruleset id from the group_to_ruleset dict
-            ruleset_id = GROUP_TO_RULESET.get(game.version_group_id)
+            for game in games:
+                # Get the region name from the api response.
+                region_name = self._resolve_region_name(game)
 
-            # If the game has a ruleset
-            if ruleset_id is not None:
-                self.game_repo.upsert_game(game.name, ruleset_id, game.id, region_id)
-                self.logger.debug(
-                    f"Upserted game {game.name} with ruleset id {ruleset_id}, api version id {game.id}, region id {region_id}")
-            else:
-                self.logger.warning(f"Skipping game {game.name} as it has no ruleset.")
+                # Gets the id of the region by looking up the region from the response to the list in the db
+                region_id = region_map.get(region_name) if region_name else None
 
-        # inserts metadata about each game
-        self.game_repo.insert_game_metadata()
+                # Gets the ruleset id from the group_to_ruleset dict
+                ruleset_id = GROUP_TO_RULESET.get(game.version_group_id)
+
+                # If the game has a ruleset
+                if ruleset_id is not None:
+                    self.game_repo.upsert_game(game.name, ruleset_id, game.id, region_id)
+                    self.logger.debug(
+                        f"Upserted game {game.name} with ruleset id {ruleset_id}, api version id {game.id}, region id {region_id}")
+                else:
+                    self.logger.warning(f"Skipping game {game.name} as it has no ruleset.")
+
+            # inserts metadata about each game
+            self.game_repo.insert_game_metadata()
+
+            # Mark the completion of the sync for the games component
+            self.sync_repo.mark_success('games')
+
+        except Exception as e:
+            self.sync_repo.mark_failure('games', err=str(e))
+            raise
+
         self.logger.debug("<< sync_pokemon_games")
 
     def sync_pokemon_info(self):
@@ -97,40 +114,58 @@ class DataManager:
 
         for gen in Config.ruleset.target_generations:
             self.logger.debug(f"Processing generation {gen}...")
-            valid_api_version_ids = GEN_VERSION_MAP.get(gen, [])            # Gets the version ids for the generation
-            version_ids = GEN_VERSION_MAP.get(gen, [])
-            
-            # Keeps track of Pokémon already discovered in this gen 
-            discovered_in_gen = set()
-            
-            # Gets all the Pokémon and their regions from the api
-            all_data = self.api_client.fetch_all_pokemon_from_gen(
-                gen=gen,
-                version_ids=version_ids,
-                valid_methods=valid_methods
-            )
 
-            for pokemon in all_data.data.pokemon:
-                self.logger.debug(f"--- POKÉMON: {pokemon.name.upper()} (ID: {pokemon.id}) ---")
-                self.poke_repo.upsert_pokemon_data(pokemon, gen)
-                discovered_in_gen.add(pokemon.id)
-                
-                # we check the family tree for its evolutions and pre-evolutions
-                if pokemon.pokemonspecy.evolution_chain:
-                    for evo in pokemon.pokemonspecy.evolution_chain.pokemonspecies:
-                        if evo.id not in discovered_in_gen:
-                            self.logger.debug(f"Evo ID {evo.id}, corresponding to {evo.name} not found in gen {gen}. Adding placeholder")
-                            self.poke_repo.insert_placeholder_id(evo.id)
-                            discovered_in_gen.add(evo.id)
+            if self.sync_repo.is_completed('pokemon_info', gen):
+                self.logger.info(f"Generation {gen} already synced. Skipping.")
+                continue
 
-                self._update_pokemon_locations(valid_api_version_ids, pokemon)
-                    
-                                
-            self.logger.debug(f"Processing {len(all_data.data.pokemon)} Pokémon from generation {gen}...")
+            # Mark the start of the sync for this generation
+            self.sync_repo.mark_start('pokemon_info', gen, run_config={
+                'version_ids': GEN_VERSION_MAP.get(gen, []),
+                'valid_methods': Config.ruleset.valid_encounter_methods,
+            })
 
-            # This goes back and will update all the "placeholder" Pokémon with their actual details 
-            self._update_pokemon_placeholder(gen)
-            
+            try:
+                valid_api_version_ids = GEN_VERSION_MAP.get(gen, [])            # Gets the version ids for the generation
+                version_ids = GEN_VERSION_MAP.get(gen, [])
+
+                # Keeps track of Pokémon already discovered in this gen
+                discovered_in_gen = set()
+
+                # Gets all the Pokémon and their regions from the api
+                all_data = self.api_client.fetch_all_pokemon_from_gen(
+                    gen=gen,
+                    version_ids=version_ids,
+                    valid_methods=valid_methods
+                )
+
+                for pokemon in all_data.data.pokemon:
+                    self.logger.debug(f"--- POKÉMON: {pokemon.name.upper()} (ID: {pokemon.id}) ---")
+                    self.poke_repo.upsert_pokemon_data(pokemon, gen)
+                    discovered_in_gen.add(pokemon.id)
+
+                    # we check the family tree for its evolutions and pre-evolutions
+                    if pokemon.pokemonspecy.evolution_chain:
+                        for evo in pokemon.pokemonspecy.evolution_chain.pokemonspecies:
+                            if evo.id not in discovered_in_gen:
+                                self.logger.debug(f"Evo ID {evo.id}, corresponding to {evo.name} not found in gen {gen}. Adding placeholder")
+                                self.poke_repo.insert_placeholder_id(evo.id)
+                                discovered_in_gen.add(evo.id)
+
+                    self._update_pokemon_locations(valid_api_version_ids, pokemon)
+
+                self.logger.debug(f"Processing {len(all_data.data.pokemon)} Pokémon from generation {gen}...")
+
+                # This goes back and will update all the "placeholder" Pokémon with their actual details
+                self._update_pokemon_placeholder(gen)
+
+                # Marks the process as completed
+                self.sync_repo.mark_success('pokemon_info', gen)
+
+            except Exception as e:
+                self.sync_repo.mark_failure('pokemon_info', gen, err=str(e))
+                raise
+
             self.logger.debug("<< sync_pokemon_info")
 
     def sync_pokemon_encounters(self):
@@ -143,22 +178,35 @@ class DataManager:
         self.encounter_repo.insert_encounter_methods()
 
         for gen in Config.ruleset.target_generations:
-            # Gets all the games and their regions from the api
-            version_ids = GEN_VERSION_MAP.get(gen, [])
+            if self.sync_repo.is_completed('encounters', gen):
+                self.logger.info(f"Encounters for generation {gen} already synced. Skipping.")
+                continue
 
-            for version in version_ids:
-                self.logger.debug(f"Mapping encounters for {version}...")
-                # maps land encounters to milestones based on the game version
-                self.encounter_repo.map_encounters_to_milestones(version)
-                
-                # Depending on what version we are loading, apply overrides for specific areas
-                match version:
-                    # Red,Blue,Yellow,FireRed,LeafGreen,let's go eevee let's go Pikachu 
-                    case 1 | 2 | 3 | 10 | 11 | 31 | 32:
-                        self.encounter_repo.kanto_overrides()
-                    
-            # Add the surf encounters based on the config
-            self.encounter_repo.sync_surf_milestones()
+            self.sync_repo.mark_start('encounters', gen)
+
+            try:
+                # Gets all the games and their regions from the api
+                version_ids = GEN_VERSION_MAP.get(gen, [])
+
+                for version in version_ids:
+                    self.logger.debug(f"Mapping encounters for {version}...")
+                    # maps land encounters to milestones based on the game version
+                    self.encounter_repo.map_encounters_to_milestones(version)
+
+                    # Depending on what version we are loading, apply overrides for specific areas
+                    match version:
+                        # Red,Blue,Yellow,FireRed,LeafGreen,let's go eevee let's go Pikachu
+                        case 1 | 2 | 3 | 10 | 11 | 31 | 32:
+                            self.encounter_repo.kanto_overrides()
+
+                # Add the surf encounters based on the config
+                self.encounter_repo.sync_surf_milestones()
+
+                self.sync_repo.mark_success('encounters', gen)
+            except Exception as e:
+                self.sync_repo.mark_failure('encounters', gen, err=str(e))
+                raise
+
         self.logger.debug("<< sync_pokemon_encounters")
 
     """ 
@@ -256,4 +304,3 @@ class DataManager:
             )
             self.logger.debug(f"Inserted summary for {pokemon_id} in version {version_id}")
         self.logger.debug("<< _insert_encounter_summary")
-    

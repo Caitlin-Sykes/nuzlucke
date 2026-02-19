@@ -63,7 +63,7 @@ CREATE TABLE milestone_teams (
                                  is_ace BOOLEAN DEFAULT FALSE,
                                  moves TEXT[], -- This stores ['tackle', 'bind', 'bide']
                                  ability varchar(50) DEFAULT NULL,
-                                 starter_id INT REFERENCES pokemon(id)
+                                 condition TEXT DEFAULT NULL -- This is used for varying teams, like rival having fire type if you picked grass, etc. This stores the PLAYER choice
 );
 
 -- Used to store encounters for milestones.
