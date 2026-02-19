@@ -61,7 +61,6 @@ jobs:
 
       - name: SonarQube Scan (Java)
         uses: SonarSource/sonarqube-scan-action@v5
-        reporter: github-pr-review
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
