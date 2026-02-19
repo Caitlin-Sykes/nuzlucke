@@ -83,7 +83,6 @@ jobs:
 
         - name: SonarQube Scan (Python)
           uses: SonarSource/sonarqube-scan-action@v5
-          reporter: github-pr-review # Change reporter.
           env:
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
