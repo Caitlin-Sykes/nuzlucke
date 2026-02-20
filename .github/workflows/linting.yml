@@ -23,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 23
+          node-version: 25
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
@@ -103,7 +103,7 @@ jobs:
 #          pip install pytest pytest-cov todo: add back in when we have tests
 #          pytest --cov=. --cov-report=xml  
       - name: SonarQube Scan (Python)
-        uses: SonarSource/sonarqube-scan-action@v5
+        uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -111,6 +111,6 @@ jobs:
           projectBaseDir: pokemon_data_loader/
           args: >
             -Dsonar.organization=${{vars.SONAR_ORGANISATION_KEY}}
-            -Dsonar.projectName="nuzlucke"
+            -Dsonar.projectName="Nuzlucke"
             -Dsonar.projectKey=${{vars.SONAR_PROJECT_KEY}}
             -Dsonar.verbose=true
