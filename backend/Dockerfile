@@ -1,4 +1,4 @@
-FROM amazoncorretto:21-alpine AS build
+FROM amazoncorretto:21.0.10-alpine AS build
 
 #Sets the directory for docker to store stuff in
 WORKDIR /backend
@@ -11,7 +11,7 @@ COPY mvnw pom.xml ./
 # Build the jar
 RUN ./mvnw clean package -DskipTests
 
-FROM amazoncorretto:21-alpine
+FROM amazoncorretto:21.0.10-alpine
 WORKDIR /backend
 LABEL "author"="Cait"
 LABEL "nuzlucke.backend.version"="1.0.0A"
