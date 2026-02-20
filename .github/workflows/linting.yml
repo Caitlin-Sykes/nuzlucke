@@ -44,7 +44,6 @@ jobs:
         with:
           reporter: github-pr-review
           stylelint_input: "src/**/*.{css}"
-          stylelint_flags: "--config stylelint.config.mjs"
           workdir: "frontend"
           fail_level: "error"
           filter_mode: diff_context
