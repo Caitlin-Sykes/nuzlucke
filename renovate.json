@@ -1,14 +1,18 @@
 {
   "$schema": "https://docs.renovate.json/renovate-schema.json",
-  "extends": ["config:recommended", ":disableDependencyDashboard"],
+  "extends": [
+    "config:recommended",
+    ":disableDependencyDashboard"
+  ],
   "branchPrefix": "renovate/",
   "gitAuthor": "Renovate Bot <bot@renovateapp.com>",
-  "repositories": ["Caitlin-Sykes/nuzlucke"],
+  "repositories": [
+    "Caitlin-Sykes/nuzlucke"
+  ],
   "prConcurrentLimit": 5,
   "automerge": true,
   "automergeType": "pr",
   "platformAutomerge": true,
-
   "enabledManagers": [
     "npm",
     "maven",
@@ -16,40 +20,61 @@
     "github-actions",
     "dockerfile"
   ],
-
   "npm": {
-    "fileMatch": ["(^|/)package\\.json$"]
+    "managerFilePatterns": [
+      "/(^|/)package\\.json$/"
+    ]
   },
   "maven": {
-    "fileMatch": ["(^|/)pom\\.xml$"]
+    "managerFilePatterns": [
+      "/(^|/)pom\\.xml$/"
+    ]
   },
   "pip_requirements": {
-    "fileMatch": ["(^|/)requirements\\.txt$"]
+    "managerFilePatterns": [
+      "/(^|/)requirements\\.txt$/"
+    ]
   },
   "github-actions": {
-    "fileMatch": ["(^|/)(workflow-templates/)?\\.github/workflows/[^/]+\\.ya?ml$"]
+    "managerFilePatterns": [
+      "/(^|/)(workflow-templates/)?\\.github/workflows/[^/]+\\.ya?ml$/"
+    ]
   },
   "dockerfile": {
-    "fileMatch": ["(^|/)(Dockerfile|[^/]*\\.Dockerfile)$"]
+    "managerFilePatterns": [
+      "/(^|/)(Dockerfile|[^/]*\\.Dockerfile)$/"
+    ]
   },
-
   "packageRules": [
     {
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchDepTypes": [
+        "devDependencies"
+      ],
       "groupName": "all devDependencies (non-major)"
     },
     {
-      "matchPackageNames": ["svelte"],
+      "matchPackageNames": [
+        "svelte"
+      ],
       "groupName": "svelte core packages"
     },
     {
       "groupName": "vite ecosystem",
-      "matchPackageNames": ["/^vite/", "/^@vitejs//"]
+      "matchPackageNames": [
+        "/^vite/",
+        "/^@vitejs//"
+      ]
     },
     {
       "groupName": "eslint ecosystem",
-      "matchPackageNames": ["/^eslint/", "/^@eslint//"]
+      "matchPackageNames": [
+        "/^eslint/",
+        "/^@eslint//"
+      ]
     },
     {
       "groupName": "testing libraries",
@@ -61,51 +86,79 @@
       ]
     },
     {
-      "matchPackageNames": ["stylelint"],
+      "matchPackageNames": [
+        "stylelint"
+      ],
       "groupName": "styling & linting tools"
     },
     {
       "groupName": "icon libraries",
-      "matchPackageNames": ["/^@iconify-json//", "/unplugin-icons/"]
+      "matchPackageNames": [
+        "/^@iconify-json//",
+        "/unplugin-icons/"
+      ]
     },
     {
-      "matchPackageNames": ["@inlang/paraglide-js"],
+      "matchPackageNames": [
+        "@inlang/paraglide-js"
+      ],
       "groupName": "internationalisation (paraglide)"
     },
     {
       "groupName": "Spring (Boot + Framework)",
       "groupSlug": "spring",
-      "matchManagers": ["maven"],
-      "matchDatasources": ["maven"],
-      "matchPackagePrefixes": [
-        "org.springframework.boot:",
-        "org.springframework:"
+      "matchManagers": [
+        "maven"
+      ],
+      "matchDatasources": [
+        "maven"
+      ],
+      "matchPackageNames": [
+        "org.springframework.boot:{/,}**",
+        "org.springframework:{/,}**"
       ]
     },
-
     {
       "groupName": "Maven dependencies (minor/patch) (non-Spring)",
       "groupSlug": "maven-nonmajor-non-spring",
-      "matchManagers": ["maven"],
-      "matchUpdateTypes": ["minor", "patch"],
-      "excludePackagePrefixes": [
-        "org.springframework.boot:",
-        "org.springframework:"
+      "matchManagers": [
+        "maven"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "matchPackageNames": [
+        "!org.springframework.boot:{/,}**",
+        "!org.springframework:{/,}**"
       ]
     },
     {
       "groupName": "Python dependencies (pip) (major)",
       "groupSlug": "python-pip-major",
-      "matchManagers": ["pip_requirements"],
-      "matchDatasources": ["pypi"],
-      "matchUpdateTypes": ["major"]
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ]
     },
     {
       "groupName": "Python dependencies (pip) (minor/patch)",
       "groupSlug": "python-pip-nonmajor",
-      "matchManagers": ["pip_requirements"],
-      "matchDatasources": ["pypi"],
-      "matchUpdateTypes": ["minor", "patch"]
+      "matchManagers": [
+        "pip_requirements"
+      ],
+      "matchDatasources": [
+        "pypi"
+      ],
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ]
     }
   ]
 }
