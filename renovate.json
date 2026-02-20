@@ -10,9 +10,7 @@
     "Caitlin-Sykes/nuzlucke"
   ],
   "prConcurrentLimit": 5,
-  "automerge": true,
-  "automergeType": "pr",
-  "platformAutomerge": true,
+  "automerge": false,
   "enabledManagers": [
     "npm",
     "maven",
@@ -20,6 +18,9 @@
     "github-actions",
     "dockerfile"
   ],
+  "lockFileMaintenance": {
+    "enabled": true
+  },
   "npm": {
     "managerFilePatterns": [
       "/(^|/)package\\.json$/"
