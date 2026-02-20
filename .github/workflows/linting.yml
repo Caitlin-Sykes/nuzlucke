@@ -64,12 +64,14 @@ jobs:
           fetch-depth: 0
 
       - name: SonarQube Scan (Java)
-        uses: SonarSource/sonarqube-scan-action@v5
+        working-directory: backend/
+        run: |
+          mvn clean verify sonar:sonar \
+            -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml \
+            -Dsonar.junit.reportPaths=target/surefire-reports
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          projectBaseDir: backend/
 
   backend-python-lint:
     name: Backend Python Scan
@@ -91,3 +93,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           projectBaseDir: pokemon_data_loader/
+          args: >
+            -Dsonar.organization=${{vars.SONAR_ORGANISATION_KEY}}
+            -Dsonar.projectName="nuzlucke"
+            -Dsonar.projectKey=${{vars.SONAR_PROJECT_KEY}}
+            -Dsonar.verbose=true
