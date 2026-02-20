@@ -43,8 +43,8 @@ jobs:
       - uses: reviewdog/action-stylelint@dd2b435cc6a7c82705307a9dee740c9bbaa10411 # v1.30.2
         with:
           reporter: github-pr-review
-          stylelint_input: "src/**/*.{css}"
           workdir: "frontend"
+          stylelint_config: "stylelint.config.mjs"
           fail_level: "error"
           filter_mode: diff_context
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -112,4 +112,3 @@ jobs:
             -Dsonar.organization=${{vars.SONAR_ORGANISATION_KEY}}
             -Dsonar.projectName="Nuzlucke"
             -Dsonar.projectKey=${{vars.SONAR_PROJECT_KEY}}
-            -Dsonar.verbose=true
