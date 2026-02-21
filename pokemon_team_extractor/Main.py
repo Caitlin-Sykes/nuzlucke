@@ -2,215 +2,316 @@ import re
 import logging
 import os
 
+import Loaders;
+from Helpers import get_slot, get_level
+
 DATA_DIR = "./data"
+OUTPUT_DIR = "output"
 logger = logging.getLogger(__name__)
+Loaders = Loaders.Loaders()
+RIVAL_STARTER_CONDITIONS = {
+    # Rival has Charizard/Charmeleon/Charmander -> Player must have picked Bulbasaur
+    'CHARMANDER': "bulbasaur",
+    'CHARMELEON': "bulbasaur",
+    'CHARIZARD':   "bulbasaur",
 
-def get_mandatory_labels(folder):
-    """
-    Extracts Trainer Classes (e.g., Rocket) from map scripts.
-    Matches dw_const or TrainerHeader usage.
-    :param folder: Folder containing map scripts.
-    :return: Set of mandatory trainer classes
-    """
-    mandatory_classes = set()
+    # Rival has Blastoise/Wartortle/Squirtle -> Player must have picked Charmander
+    'SQUIRTLE':   "charmander",
+    'WARTORTLE':  "charmander",
+    'BLASTOISE':  "charmander",
 
-    # For every file in the folder
-    for root, _, files in os.walk(folder):
-        # for every asm file
+    # Rival has Venusaur/Ivysaur/Bulbasaur -> Player must have picked Squirtle
+    'BULBASAUR':  "squirtle",
+    'IVYSAUR':    "squirtle",
+    'VENUSAUR':   "squirtle",
+
+    # Rival has CYNDAQUIL/QUILAVA/TYPHLOSION -> Player must have picked chikorita
+    'CYNDAQUIL': "chikorita",
+    'QUILAVA': "chikorita",
+    'TYPHLOSION':   "chikorita",
+    
+    # Rival has TOTODILE/CROCONAW/FERALIGATR -> Player must have picked cyndaquil
+    'TOTODILE':   "cyndaquil",
+    'CROCONAW':  "cyndaquil",
+    'FERALIGATR':  "cyndaquil",
+    
+    # Rival has CHIKORITA/BAYLEAF/MEGANIUM -> Player must have picked totodile
+    'CHIKORITA':  "totodile",
+    'BAYLEAF':    "totodile",
+    'MEGANIUM':   "totodile",
+
+    # Rival has TORCHIC/COMBUSKEN/BLAZIKEN -> Player must have picked treecko
+    'TORCHIC': "treecko",
+    'COMBUSKEN': "treecko",
+    'BLAZIKEN':   "treecko",
+
+    # Rival has MUDKIP/MARSHTOMP/SWAMPERT -> Player must have picked torchic
+    'MUDKIP':   "torchic",
+    'MARSHTOMP':  "torchic",
+    'SWAMPERT':  "torchic",
+
+    # Rival has TREECKO/GROVYLE/SCEPTILE -> Player must have picked mudkip
+    'TREECKO':  "mudkip",
+    'GROVYLE':    "mudkip",
+    'SCEPTILE':   "mudkip",
+
+    # Rival has CHIMCHAR/MONFERNO/INFERNAPE -> Player must have picked turtwig
+    'CHIMCHAR': "turtwig",
+    'MONFERNO': "turtwig",
+    'INFERNAPE':   "turtwig",
+
+    # Rival has PIPLUP/PRINPLUP/EMPOLEON -> Player must have picked chimchar
+    'PIPLUP':   "chimchar",
+    'PRINPLUP':  "chimchar",
+    'EMPOLEON':  "chimchar",
+
+    # Rival has TURTWIG/GROTLE/TORTERRA -> Player must have picked piplup
+    'TURTWIG':  "piplup",
+    'GROTLE':    "piplup",
+    'TORTERRA':   "piplup"
+}
+
+def calculate_moves(species, level, moves_db, base_db):
+    """Calculates the moves for a given Pokemon at a given level.
+    :param species: The Pokemon's species name.
+    :param level: The Pokemon's level.
+    :param moves_db: A dictionary mapping species names to a list of (level, move) tuples.
+    :param base_db: A dictionary mapping species names to a list of base moves.
+    @return: A list of the Pokemon's moves, sorted by level."""
+    
+    spec = species.upper().strip()
+
+    # Start with base moves, or an empty list if not found
+    current_moves = list(base_db.get(spec, []))
+
+    # Overlay level-up moves
+    if spec in moves_db:
+        for m_lvl, m_name in moves_db[spec]:
+            if m_lvl <= level:
+                if m_name not in current_moves:
+                    current_moves.append(m_name)
+            else:
+                break
+
+  
+    final = current_moves[-4:]
+
+    return final if final else ['no-data']
+
+
+# --- TRAINER SCANNING ---
+
+
+
+
+def get_mandatory_labels(scripts_folder, constant_file):
+    """
+   Extracts Trainer Classes (e.g., Rocket) from map scripts.
+   Matches dw_const or TrainerHeader usage.
+   :param scripts_folder: Folder containing map scripts.
+   :param constant_file: file containing trainer ids
+   :return: Set of mandatory trainer classes
+   """
+
+    # loads all trainer ids based on the file
+    id_map = Loaders.load_trainer_constants(constant_file)
+    logger.debug(f"All trainer_ids {id_map}")
+    mandatory = set()
+
+    # for every script in the scripts folder
+    for root, _, files in os.walk(scripts_folder):
         for file in files:
             if file.endswith('.asm'):
-                filepath = os.path.join(root, file)
-                with open(filepath, 'r', encoding='utf-8', errors='ignore') as mf:
-                    content = mf.read()
-                    
-                    # Look for any TrainerHeader files
-                    # example: MtMoon3TrainerHeader0
-                    headers = re.findall(r'(\w+?)TrainerHeader\d+', content)
-                    logger.debug(f"Found headers: {headers}")
-                    
-                    
-                    #Look for Class Names in text pointers 
-                    #example MtMoonB2FRocket1BattleText)
-                    text_classes = re.findall(r'dw_const\s+\w+?([A-Z][A-Za-z0-9]+?)\d+Text', content)
-                    logger.debug(f"Found text classes: {text_classes}")
-                    
-                    
-                    for h in headers: mandatory_classes.add(h)
-                    for c in text_classes: mandatory_classes.add(c)
+                with open(os.path.join(root, file), 'r', errors='ignore') as f:
+                    content = f.read()
 
-    final_labels = {c + "Data" for c in mandatory_classes}
-    logger.debug(f"Found mandatory classes: {final_labels}")
-    return final_labels
+                    #  looks for all events like:
+                    # trainer EVENT_BEAT_ROUTE_24_TRAINER_0,
+                    # compares the id with the id map and adds it
+                    ids = re.findall(r'trainer\s+EVENT_[A-Z0-9_]+,\s*(\d+)', content)
+                    for fid in ids:
+                        if int(fid) in id_map: mandatory.add(id_map[int(fid)])
 
-def load_moves(filepath):
-    """
-    Loads moves data from a file.
-    :param filepath: Path to the moves file.
-    :return: Dictionary of moves data.
-    """
-    db = {}
-  
-    with open(filepath, 'r') as f:
-        content = f.read()
-    curr = None
-    for line in content.split('\n'):
-        s_match = re.match(r'^(\w+)EvosMoves:', line)
-        if s_match: curr = s_match.group(1).upper(); db[curr] = []
-        m_match = re.match(r'^db\s+(\d+),\s+(\w+)', line.strip())
-        if m_match and curr: db[curr].append((int(m_match.group(1)), m_match.group(2).lower().replace('_', '-')))
-    return db
+                    # Fetches all the rival fights
+                    rivals = re.findall(r'OPP_([A-Z0-9_]+)', content)
+                    logger.debug(f"rival: {rivals}")
 
-def calculate_moves(species, level, db):
-    spec = species.upper()
-    if spec not in db: return ['NO DATA']
-    available = [m[1] for m in db[spec] if m[0] <= level]
-    return available[-4:] if available else ['NO DATA']
+                    for b in rivals:
+                        mandatory.add("".join([p.lower() for p in b.split('_')]) + "Data")
 
-def process(mandatory, moves_db, parties_path):
+                    # This regex looks for:
+                    # 1. Something ending in 'Gym'
+                    # 2. The NAME (Captured)
+                    # 3. Something starting with 'PostBattle'
+                    # Example: CeladonGymErikaPostBattleScript -> Erika
+                    gym_leader = re.findall(r'(?:\w+Gym)?(\w+?)(?:PostBattle)', content)
+                    logger.debug(f"Gym leaders: {gym_leader}")
+                    for leader in gym_leader:
+                        mandatory.add("".join([p.lower() for p in leader.split('_')]) + "Data")
+                        
+                
+                    # this looks for the elite four, by looking for the suffixes EndBattle|AfterBattle
+                    e4 = re.findall(r'(?:\w+Room|\w+Gym)?([A-Z][a-z]+)(?:EndBattle|AfterBattle)Script', content)
+                    logger.debug(f"E4: {e4}")
+                    for elite in e4:
+                        mandatory.add("".join([p.lower() for p in elite.split('_')]) + "Data")
+
+                        
+    logger.debug(f"Mandatory Trainers: {mandatory}")
+    return mandatory
+
+
+# --- CORE PROCESSING ---
+
+def process(mandatory, moves_db, base_db, parties_path):
     """
-    Processes parties data and generates SQL tuples.
-    :param mandatory: probable mandatory trainer battles
-    :param moves_db: the dict of moves 
-    :param parties_path: the path to the parties file
-    :return: tuple of SQL tuples
-    """
+   Processes parties data and generates SQL tuples.
+   :param mandatory: probable mandatory trainer battles
+   :param moves_db: the dict of moves 
+   :param base_db: 
+   :param parties_path: the path to the parties file
+   :return: tuple of SQL tuples
+   """
     tuples = []
 
     with open(parties_path, 'r') as f:
-        # splits where it finds a word followed by "Data" and a colon
         sections = re.split(r'(\w+Data):', f.read())
-
+    
+    mandatory_lower = {m.lower() for m in mandatory}
     for i in range(1, len(sections), 2):
-        label = sections[i]
+        label = sections[i].lower()
         
         logger.debug(f"Processing label: {label}")
-        logger.debug(f"Mandatory classes: {mandatory}")
-    
-        # if the label is not in mandatory, skip to the next iteration
-        # is likely an optional file
-        if label not in mandatory:
-            logger.warning(f"Skipping label found in parties file: {label} (not in mandatory list)")
+        logger.debug(f"Mandatory classes: {mandatory_lower}")
+        if label not in mandatory_lower:
+            logger.debug(f"Skipping label: {label}")
             continue
-        
-        data_block = sections[i+1].strip()
-        teams = data_block.split('\n')
 
+        teams = sections[i + 1].strip().split('\n')
         team_index = 1
+
         for line in teams:
-            line = line.split(';')[0].strip() # Remove comments
+            line = line.split(';')[0].strip()
             if not line.startswith('db'): continue
-
-            raw_parts = line.replace('db', '').strip().split(',')
-            parts = [p.strip() for p in raw_parts if p.strip()]
-
-            if not parts: continue
+            parts = [p.strip() for p in line.replace('db', '').split(',') if p.strip()]
 
             mon_list = []
-           
+
             # if it contains $FF it basically means each pokemon has its own level
             #example: db $FF, 18, PIDGEOTTO, 15, ABRA, 15, RATTATA, 17, SQUIRTLE, 0
             if parts[0] == '$FF':
-                for j in range(1, len(parts)-1, 2):
+                for j in range(1, len(parts) - 1, 2):
                     if parts[j] == '0': break
-                    mon_list.append({'lvl': int(parts[j]), 'spec': parts[j+1]})
-                    
+                    mon_list.append({'lvl': int(parts[j]), 'spec': parts[j + 1].upper()})
+
             # If it doesn't, and its only db, it means all pokemon have the same level
             else:
                 lvl = int(parts[0])
                 for j in range(1, len(parts)):
-                    if parts[j] == '0': break
-                    mon_list.append({'lvl': lvl, 'spec': parts[j]})
+                    if parts[j] == '0' or not parts[j]: break
+                    mon_list.append({'lvl': lvl, 'spec': parts[j].upper()})
 
             # Converts it into useful sql, 
             # Result format: (TrainerLabel, Species, Slot, Level, isAce, Moves, Condition)
             # Example: ('Cerulean City - Gym 2', 'staryu', 1, 18, FALSE, ARRAY['tackle', 'water-gun'], NULL),
             for idx, mon in enumerate(mon_list):
-                m = calculate_moves(mon['spec'], mon['lvl'], moves_db)
+                condition = 'NULL'
+
+                # if label contains rival, we need to set a condition for the team
+                # ie, if the starter they have is Charmander, then the condition must be the player picked bulbasaur
+                if 'rival' in label.lower() and mon['spec'] in RIVAL_STARTER_CONDITIONS:
+                    team_species = [m['spec'] for m in mon_list]
+                
+                    for spec, cond_text in RIVAL_STARTER_CONDITIONS.items():
+                        if spec in team_species:
+                            condition = f"'{cond_text}'"
+                            break
+                                
+                m = calculate_moves(mon['spec'], mon['lvl'], moves_db, base_db)
                 ace = 'TRUE' if (idx + 1) == len(mon_list) else 'FALSE'
-                moves_sql = "ARRAY[" + ", ".join([f"'{move}'" for move in m]) + "]"
-               
-                tuples.append(f"('{label}_{team_index}', '{mon['spec'].lower()}', {idx+1}, {mon['lvl']}, {ace}, {moves_sql}, NULL)")
-
+                m_sql = "ARRAY[" + ", ".join([f"'{move}'" for move in m]) + "]"
+                tuples.append(
+                    f"('{label}_{team_index}', '{mon['spec'].lower().replace('_', '-')}', {idx + 1}, {mon['lvl']}, {ace}, {m_sql}, {condition})")
             team_index += 1
-
     return tuples
 
+
 def setup_logging(cwd):
+    """Sets up logging to a file.
+    :param cwd: The current working directory."""
     log_path = os.path.join(cwd, "pokemon_team_extractor.log")
-    logging.basicConfig(filename=str(log_path), level="WARNING",
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-
-
+    logging.basicConfig(filename=str(log_path), level="DEBUG",
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 if __name__ == "__main__":
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    setup_logging(base_dir)
-    
-    if not os.path.exists(DATA_DIR):
-        print(f"Directory {DATA_DIR} not found.")
-        exit()
-        
-    # for each game folder in data
+    setup_logging(os.getcwd())
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+
     for gen_folder in os.listdir(DATA_DIR):
-        logger.info(f"Processing {gen_folder}...")
-        
-        # gets the path of each game_folder in /data
-        game_folder_path = os.path.join(DATA_DIR, gen_folder)
-        
-        #gets all files in the gen_folder
-        all_files = os.listdir(f"{game_folder_path}")
-        
-        # tries to find moves_file_name by looking for files containing "moves" in the name
-        moves_file_name = next((f for f in all_files if re.search(r'moves', f, re.I) and f.endswith('.asm')), None)
-
-        # tries to find parties_file_name by looking for files containing "parties" in the name
-        parties_file_name = next((f for f in all_files if re.search(r'parties', f, re.I) and f.endswith('.asm')), None)
-        
-        logger.info(f"Moves file: {moves_file_name} and Parties file: {parties_file_name}.")
-        
-        # Basically gets any trainer that has some kind of map data attached to them
-        # usually a good indicator of it being an unavoidable battle
-        m_list = get_mandatory_labels(f"{game_folder_path}/scripts")
-
-        # loads the moves data into a dict
-        m_dict = load_moves(f"{game_folder_path}/{moves_file_name}") if moves_file_name else {exit("Cannot find file containing moves data. Please check the file name contains 'moves'")}
-
-        # it gets the name of the games its applying to from the name of the folder
-        # and splits it by underscore
-        #ie, red_blue becomes ["red", "blue"]
-        game_names = gen_folder.split('_')
-        
-        # Format them for the SQL IN clause: ('red', 'blue')
-        names_formatted = ", ".join([f"'{name}'" for name in game_names])
-        
-        results = process(m_list, m_dict, f"{game_folder_path}/{parties_file_name}")
-
-        OUTPUT_DIR = "output"
-        if not os.path.exists(OUTPUT_DIR):
-            os.makedirs(OUTPUT_DIR)
-            logger.info(f"Created missing directory: {OUTPUT_DIR}")
+        path = os.path.join(DATA_DIR, gen_folder)
+        if not os.path.isdir(path): continue
     
-        OUTPUT_FILE = f"{OUTPUT_DIR}/xx_pokemon_{gen_folder}_milestone_teams_table.sql"      
+        logger.info(f"Processing folder: {gen_folder}")
+
+        all_files = os.listdir(path)
+        moves_f = next((f for f in all_files if 'moves' in f.lower() and f.endswith('.asm')), None)
+        parties_f = next((f for f in all_files if 'parties' in f.lower() and f.endswith('.asm')), None)
+        const_f = next((f for f in all_files if 'constants' in f.lower() and f.endswith('.asm')), None)
+        logger.debug(f"Moves file: {moves_f}, Parties file: {parties_f}, Constants file: {const_f}")
         
+        # File Paths
+        base_stats_dir = os.path.join(path, "poke_stats")
+        moves_dir = os.path.join(path, moves_f)
+        scripts_dir = os.path.join(path, "scripts")
+        const_dir = os.path.join(path, const_f)
+        logger.debug(f"Base stats dir: {base_stats_dir}, Moves dir: {moves_dir}, Scripts dir: {scripts_dir}, Constants dir: {const_dir}")
+        
+        # Load libraries
+        b_dict = Loaders.load_all_base_stats(base_stats_dir)
+        m_dict = Loaders.load_moves(moves_dir)
+        m_list = get_mandatory_labels(scripts_dir, const_dir)
+        logger.debug(f"Loaded {len(m_list)} mandatory labels")
+
+        # Process results
+        results = process(m_list, m_dict, b_dict, os.path.join(path, parties_f))
+
         if results:
-            with open(OUTPUT_FILE, 'w') as f:
-                # Start the Insert
-                f.write("INSERT INTO milestone_teams (milestone_id, pokemon_id, slot, level, is_ace, moves, condition)\n")
-        
-                # Start the Select from the Virtual Table (the 't' values)
+            # Map every UNIQUE milestone (e.g., 'Rival1Data_7') to its minimum level
+            milestone_min_levels = {}
+            for entry in results:
+                # Get 'Rival1Data_7' instead of just 'Rival1Data'
+                milestone_id = re.search(r"\('([^']+)'", entry).group(1)
+                lvl = get_level(entry)
+
+                if milestone_id not in milestone_min_levels or lvl < milestone_min_levels[milestone_id]:
+                    milestone_min_levels[milestone_id] = lvl
+
+            # Sort the milestone teams by level, then by ID, then by position
+            results.sort(key=lambda x: (
+                milestone_min_levels.get(re.search(r"\('([^']+)'", x).group(1), 0), 
+                re.search(r"\('([^']+)'", x).group(1),                        
+                get_slot(x)                                                     
+            ))
+
+
+        # Outputs our results into a sql file
+        if results:
+            game_names = gen_folder.split('_')
+            names_formatted = ", ".join([f"'{name}'" for name in game_names])
+            milestone_team_file = f"{OUTPUT_DIR}/xx_pokemon_{gen_folder}_milestone_teams_table.sql"
+
+            with open(milestone_team_file, 'w') as f:
+                f.write("-- Generated for games: " + ", ".join(game_names) + "\n")
+                f.write(
+                    "INSERT INTO milestone_teams (milestone_id, pokemon_id, slot, level, is_ace, moves, condition)\n")
                 f.write("SELECT m.id, p.id, t.slot, t.lvl, t.ace, t.moves_arr, t.condition\n")
                 f.write("FROM (VALUES\n")
-        
-                # Write the actual data rows
                 f.write(",\n".join(results))
-        
-                # Close the Values block and perform the Joins
                 f.write(f"\n) AS t(stage_search, p_name, slot, lvl, ace, moves_arr, condition)\n")
                 f.write("JOIN pokemon p ON p.name = t.p_name\n")
                 f.write("JOIN milestones m ON m.stage_name = t.stage_search\n")
                 f.write("JOIN games g ON m.game_id = g.id\n")
-        
-                # The Filter: matches your folder names and handles the NULL requirement
                 f.write(f"WHERE (g.name IN ({names_formatted}) OR g.name IS NULL);\n")
-        else:
-            logger.info("Still 0 matches. Double check your folder names.")
+
+            print(f"Success: {milestone_team_file} created with {len(results)} records.")
