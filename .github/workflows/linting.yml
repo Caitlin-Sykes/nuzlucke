@@ -2,8 +2,9 @@ name: Lint Code Base
 on:
   pull_request:
     branches: [ "master" ]
+    branches-ignore:
+      - 'renovate/**'
   workflow_dispatch:
-
 permissions:
   contents: read
   pull-requests: write
