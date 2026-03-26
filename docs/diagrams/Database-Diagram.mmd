@@ -1,0 +1,165 @@
+---
+config:
+  theme: base
+  themeVariables:
+    primaryColor: '#caabed'
+    primaryTextColor: '#374D7C'
+    primaryBorderColor: '#374D7C'
+    lineColor: '#374D7C'
+  layout: elk
+---
+erDiagram
+	direction TB
+	GAMES["&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspGAMES<br>All supported games"] {
+		int id  "PK"  
+		text name  ""  
+		int ruleset_id  "FK"  
+		int region_id  "FK"  
+		bool is_rom_hack  "DEFAULT FALSE"  
+		bool is_dlc  "DEFAULT FALSE"  
+		jsonb illustration  ""  
+		jsonb game_credits  "" 
+		jsonb release_dates  ""  
+		varchar(50) platform  ""  
+		INTEGER[] generations_included  ""  
+		VARCHAR(500) description  ""  
+		BOOLEAN has_alternate_forms  "DEFAULT FALSE"  
+		BOOLEAN has_mega_evolution  "DEFAULT FALSE"  
+		UNIQUE_CONSTRAINT unique_game_per_ruleset  "UNIQUE (ruleset_id, name)"  
+	}
+
+	ABILITIES["ABILITIES<br>All abilities"] {
+		serial id  "PK"  
+		varchar(50) name  "UNIQUE NOT NULL"  
+		text description  ""  
+	}
+
+	RULESET["&nbsp&nbsp&nbsp&nbsp&nbsp&nbspRULESET<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbspAll rulesets <br>for different games"] {
+		serial id  "PK"  
+		string name  ""  
+		text description  ""  
+		bool is_official  ""  
+	}
+
+	REGIONS["REGIONS<br>All regions"] {
+		serial id  "PK"  
+		varchar(50) name  "UNIQUE NOT NULL"  
+	}
+
+	GAME_METADATA["GAME_METADATA<br>&nbsp&nbspContains specific <br/>&nbsp data about games"] {
+		int game_id  "PK"  
+		bool has_fakemon  "DEFAULT FALSE"  
+		bool stats_modified  "DEFAULT TRUE"  
+		bool is_complete  "DEFAULT FALSE"  
+		int rom_hack_of_game_id  "FK"  
+		game_engine engine_type  "ENUM: 'Rom Hack', 'Essentials', 'Unity'"  
+		jsonb qol_features  "Challenge Modes, HM Items, etc"  
+		varchar(50) difficulty_level  ""  
+		bool unique_story  "DEFAULT TRUE"  
+	}
+
+	TYPES["&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspTYPES<br>All possible Pokemon Types"] {
+		serial id  "PK"  
+		VARCHAR(50) name  "UNIQUE NOT NULL"  
+		BOOLEAN is_official  "DEFAULT TRUE"  
+	}
+
+	POKEMON["POKEMON<br> All pokemon and their base data"] {
+		serial id  "PK"  
+		int national_dex_number  "NOT NULL"  
+		varchar(50) name  "NOT NULL"  
+		varchar(50) slug  "DEFAULT NULL"  
+		varchar(50) form_name  "DEFAULT NULL"  
+		bool is_official_form  "DEFAULT TRUE"  
+		int evolves_from_id  "FK - SELF-REFERENCING "  
+		UNIQUE_CONSTRAINT dex_and_form_name  "UNIQUE (national_dex_number, form_name)"  
+		INDEX idx_pokemon_evolves_from  "pokemon(evolves_from_id)"  
+	}
+
+	POKEMON_GAME_STATS["POKEMON_GAME_STATS<br>&nbsp&nbspVariable Pokemon Stats"] {
+		serial id  "PK"  
+		int pokemon_id  "NOT NULL REFERENCES pokemon(id)"  
+		int ruleset_id  "NOT NULL REFERENCES rulesets(id)"  
+		int type_1_id  "REFERENCES types(id)"  
+		int type_2_id  "REFERENCES types(id)"  
+		int ability_1_id  "REFERENCES abilities(id)"  
+		int ability_2_id  "REFERENCES abilities(id)"  
+		int hidden_ability_id  "REFERENCES abilities(id)"  
+		UNIQUE_CONSTRAINT unique_pokemon_per_ruleset  "UNIQUE (pokemon_id, ruleset_id)"  
+	}
+
+	SYNC_STATE["&nbsp&nbsp&nbsp&nbspSYNC_STATE<br/>&nbspTracks data import<br/>&nbsp&nbsp&nbspstatus & history"] {
+		text component  "PK, NOT NULL"  
+		int generation  "PK, NOT NULL"  
+		sync_status status  "NOT NULL, ENUM: 'completed', 'failed', 'in_progress'"  
+		timestamptz started_at  "NOT NULL, DEFAULT now()"  
+		timestamptz finished_at  "NULLABLE"  
+		jsonb last_cursor  "NULLABLE"  
+		text run_config_hash  "NULLABLE"  
+		text error_message  "NULLABLE"  
+		UNIQUE_CONSTRAINT sync_state_pk  "PRIMARY KEY (component, generation)"  
+	}
+
+	LOCATIONS["&nbsp&nbsp&nbsp&nbspLOCATIONS<br/>Represents broad <br/>geographical areas"] {
+		serial id  "PK"  
+		int region_id  "FK"  
+		varchar(100) name  "NOT NULL"  
+		UNIQUE_CONSTRAINT unique_loc_per_region  "UNIQUE (region_id, name)"  
+	}
+
+	LOCATION_AREAS["LOCATION_AREAS<br/>Represents specific <br/>sub-sections within <br/>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspa Location"] {
+		serial id  "PK"  
+		int location_id  "NOT NULL REFERENCES locations(id)"  
+		varchar(100) name  "NOT NULL"  
+		UNIQUE_CONSTRAINT unique_area_per_location "UNIQUE (name, location_id)"
+	}
+
+	%% MILESTONES["MILESTONES"] {
+	%% 	serial id "PK"
+    %%     int game_id "REFERENCES games(id)"
+    %%     varchar(100) stage_name "NOT NULL"
+    %%     varchar(100) trainer_name
+    %%     int level_cap "NOT NULL"
+    %%     int order_index "NOT NULL"
+    %%     bool is_major_boss "DEFAULT TRUE"
+    %%     varchar(50) game_slug
+    %%     varchar(50) unlocks_surf "DEFAULT NULL"
+    %%     UNIQUE_CONSTRAINT uq_game_order_index "UNIQUE(game_id, order_index)"
+	%% }
+	ENCOUNTER_METHODS["&nbsp&nbsp&nbsp&nbsp&nbspENCOUNTER_METHODS<br/>Ways you can encounter Pokemon"] {
+		serial id "PK"
+		varchar(50) name "UNIQUE"
+		bool is_primary "DEFAULT FALSE"
+	}
+	ENCOUNTERS["ENCOUNTERS"] {
+ 		serial id "PK"
+        int game_id "FK, NOT NULL REFERENCES games(id)"
+        int location_id "FK, NOT NULL REFERENCES locations(id)"
+        int location_area_id  "FK, REFERENCES location_areas(id)"
+        int pokemon_id  "FK,NOT NULL REFERENCES pokemon(id)"
+        varchar(50) method
+        int min_level INTEGER
+        int max_level INTEGER
+        UNIQUE_CONSTRAINT unique_pokemon_encounter_entry "UNIQUE (game_id, location_id, location_area_id, pokemon_id, method)"
+	}
+                           
+
+	%% Relationships
+	RULESET||--o{GAMES:"defines rules for"
+	RULESET||--o{POKEMON_GAME_STATS:"defines context for"
+	GAMES||--o|GAME_METADATA:"extended_by"
+	GAMES||--o|ENCOUNTERS:"provides game for"
+	LOCATIONS||--o|ENCOUNTERS:"provides main location for"
+	LOCATION_AREAS||--o|ENCOUNTERS:"provides sub_location for"
+	POKEMON||--o|ENCOUNTERS:"provides pokemon data for"
+	GAMES||--o{GAME_METADATA:"rom_hack_of_id (1:N)"
+	GAMES||--o{MILESTONES:"links milestones to a game"
+	TYPES||--o{POKEMON_GAME_STATS:"provides type_1"
+	TYPES||--o{POKEMON_GAME_STATS:"provides type_2"
+	POKEMON||--o{POKEMON_GAME_STATS:"provides base details about pokemon"
+	ABILITIES||--o{POKEMON_GAME_STATS:"provides ability_1"
+	ABILITIES||--o{POKEMON_GAME_STATS:"provides ability_2"
+	ABILITIES||--o{POKEMON_GAME_STATS:"provides hidden_ability"
+	REGIONS||--|{LOCATIONS:"provides region for the location"
+	REGIONS||--|{GAMES:"sets region for"
+	LOCATIONS||--o{LOCATION_AREAS:"provides the main location for the sub-location"
