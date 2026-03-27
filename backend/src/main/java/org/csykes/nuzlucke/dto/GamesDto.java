@@ -7,20 +7,30 @@ import lombok.Setter;
 import org.csykes.nuzlucke.entity.GamesEntity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class GamesDto {
-    
+    private Integer id;
     private String name;
     private String creator;
     private String platform;
     private Integer[] generationsIncluded;
+    private Integer rulesetId;
+    private Integer regionId;
     private Boolean isRomHack;
+    private Boolean isDlc;
     private ReleaseDates releaseDate;
     private Credits credits;
+    private String regionName;
+    private String description;
+    private String isRomHackOf;
+    private Boolean hasFakemon;
+    private String difficultyLevel;
+    private String[] qolFeatures;
 
     @Getter
     @Setter
@@ -44,28 +54,20 @@ public class GamesDto {
     }
 
     public static GamesDto fromEntity(GamesEntity game) {
-        /**
-         * Converts a GamesEntity to a GamesDto.
-         * @param game GamesEntity to convert.
-         */
-        return new GamesDto(
-                game.getName(),
-                game.getCreator(),
-                game.getPlatform(),
-                game.getGenerationsIncluded(),
-                game.getIsRomHack(),
-                new GamesDto.ReleaseDates(
-                        game.getReleaseDateEu(),
-                        game.getReleaseDateJp(),
-                        game.getReleaseDateAu(),
-                        game.getReleaseDateUs()
-                ),
-                new GamesDto.Credits(
-                        game.getImageCredits(),
-                        game.getImageRights(),
-                        game.getImageUrl()
-                )
-        );
-    }
+            GamesDto dto = new GamesDto();
+
+            dto.setId(game.getId());
+            dto.setName(game.getName());
+            dto.setPlatform(game.getPlatform());
+            dto.setGenerationsIncluded(game.getGenerationsIncluded());
+            dto.setRulesetId(game.getRulesetId());
+            dto.setRegionId(game.getRegionId());
+            dto.setIsRomHack(game.getIsRomHack());
+            dto.setIsDlc(game.getIsDlc());
+            dto.setDescription(game.getDescription());
+            dto.setRegionName(game.getRegion() != null ? game.getRegion().getName() : null);
+    
+            return dto;
+        }
 }
 

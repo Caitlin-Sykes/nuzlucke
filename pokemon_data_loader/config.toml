@@ -22,7 +22,8 @@ valid_encounter_methods = [
 
 # this is what generations to target. i.e. only Pokémon from gen 1, 2, and 3 
 # would be in the database.
-target_generations = [1, 2, 3,4,5,6,7,8,9]
+target_generations = [1, 2]
+#target_generations = [1, 2, 3,4,5,6,7,8,9]
 
 [logging]
 logging_level = "DEBUG"

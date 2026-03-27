@@ -1,7 +1,39 @@
 {
-  "noImage": "No image:",
-  "platform": "Platform:",
-  "romHack": "ROM Hack:",
-  "creator": "Creator:",
-  "gen": "Gen:"
+  "home": {
+    "title": "Nuzlucke",
+    "description": "Select a Pokémon game to start your run.",
+    "state": {
+      "load_games_fail": "Couldn’t load games",
+      "waiting": "Loading games…"
+    },
+    "available_games": "Available games:"
+  },
+  "card": {
+    "noImage": "No image:",
+    "platform": "Platform:",
+    "romHack": "ROM Hack:",
+    "creator": "Creator:",
+    "gen": "GEN:",
+    "imageAlt": "{name} cover",
+    "includedGens": "Included Generations:",
+    "region": "Region:",
+    "description": "Description",
+    "has_fakemon": "Has Fakemon:",
+    "qol": "Quality of Life Features:",
+    "difficulty": "Difficulty Level:",
+    "game_details": "Game Details",
+    "release_date": "Release Date (Europe):",
+    "ruleset_id": "Ruleset ID:",
+    "has_forms": "Alternate Forms:"
+  },
+  "errors": {
+    "noGames": "Failed to load games.",
+    "description": "Description not found.",
+    "no_difficulty": "Difficulty level not found.",
+    "none": "None"
+  },
+  "actions": {
+    "retry": "Retry"
+  }
+ 
 }

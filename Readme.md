@@ -47,13 +47,13 @@
 - make front end look better
 - check for more overrides
 - tidy up readmes
-- ci/cd pipelines
 - lock down python user for db
-- FIX 05_populate_milestone_teams_table.sql
 - look into python optimisation
 - java logger
 - kanban
-
+- style cards after pokemon cards
+- add game/romhack description
+- TODO:FIX THE BACKEND
 ## Credits
 - [PokeAPI](https://pokeapi.co/) - for the data I populate the db with
 - [Serebii](https://www.serebii.net/) – For being a resource of knowledge to cross-reference against

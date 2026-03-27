@@ -43,5 +43,28 @@ A utility I wrote to extract possible mandatory battles from decompiled pokemon 
     db "BLAINE@"
     ```
     
+    #### trainer constants
+
+    ```
+    const_def
+	trainer_const NOBODY         ; $00
+	trainer_const YOUNGSTER      ; $01
+	trainer_const BUG_CATCHER    ; $02
+	trainer_const LASS           ; $03
+	trainer_const SAILOR         ; $04
+    ```
+    
+    #### Poke Stats
+
+    ```
+    DEX_CLEFABLE ; pokedex id
+
+	db  95,  70,  73,  60,  85
+	;   hp  atk  def  spd  spc
+
+	db NORMAL, NORMAL ; type
+	db 25 ; catch rate
+	db 129 ; base exp
+    ```
 - run `python3 main.py`
 - the output will be in the `output` folder

@@ -85,9 +85,9 @@ class DataManager:
 
                 # If the game has a ruleset
                 if ruleset_id is not None:
-                    self.game_repo.upsert_game(game.name, ruleset_id, game.id, region_id)
+                    self.game_repo.upsert_game(game.name, ruleset_id, region_id)
                     self.logger.debug(
-                        f"Upserted game {game.name} with ruleset id {ruleset_id}, api version id {game.id}, region id {region_id}")
+                        f"Upserted game {game.name} with ruleset id {ruleset_id}, region id {region_id}")
                 else:
                     self.logger.warning(f"Skipping game {game.name} as it has no ruleset.")
 

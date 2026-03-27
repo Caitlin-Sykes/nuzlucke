@@ -1,13 +1,13 @@
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 import { defineConfig, loadEnv } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import Icons from 'unplugin-icons/vite';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const backendBase = env.VITE_BACKEND_BASE_URL ?? 'http://localhost:8081';
-
   return {
-    plugins: [paraglideVitePlugin({ project: './project.inlang', outdir: './src/generated/paraglide' }),svelte()],
+    plugins: [paraglideVitePlugin({ project: './project.inlang', outdir: './src/generated/paraglide' }),svelte(),  Icons({autoInstall: true, compiler: 'svelte'})],
     envDir: '../',
     server: {
       proxy: {

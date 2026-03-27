@@ -18,8 +18,8 @@
 5. you can now debug in your IDE
 
 ### To reset the DB
-- run `./reset.ps1` or `docker-compose down -v`   && `docker-compose up -d`
+- run `docker-compose down -v`   && `docker-compose up -d`
 
 ### To teardown the DB
-- run `./teardown.ps1` or `docker-compose down`
+- run `docker-compose down`
 

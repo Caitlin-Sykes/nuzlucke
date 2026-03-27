@@ -1,6 +1,7 @@
 package org.csykes.nuzlucke.controllers;
 
 import org.csykes.nuzlucke.dto.GamesDto;
+import org.csykes.nuzlucke.entity.GamesEntity;
 import org.csykes.nuzlucke.repository.GamesRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,11 +22,12 @@ public class GamesController {
 
     /**
      * Retrieves a list of available games for the user to choose from.
-     * Returns games sorted by earliest release date.
+     * Returns games sorted by id.
      */
     @GetMapping("/available")
     public List<GamesDto> getAvailableGames() {
-        return gamesRepository.findByIsDlcFalseOrIsDlcIsNull(Sort.by(Sort.Direction.ASC, "releaseDateUs")).stream()
+        Sort sort = Sort.sort(GamesEntity.class).by(GamesEntity::getId).ascending();
+        return gamesRepository.findByIsDlcFalseOrIsDlcIsNull(sort).stream()
                 .map(GamesDto::fromEntity)
                 .toList();
     }

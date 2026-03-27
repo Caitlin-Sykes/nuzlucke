@@ -105,20 +105,20 @@ class PokemonRepository(BaseRepository):
     
         # adds the location 
         self.db.cursor.execute("""
-                               INSERT INTO locations (api_id, name, region_id)
-                               VALUES (%s, %s, %s)
-                               ON CONFLICT (api_id) DO UPDATE SET name = EXCLUDED.name
+                               INSERT INTO locations (name, region_id)
+                               VALUES (%s, %s)
+                               ON CONFLICT (name, region_id) DO UPDATE SET name = EXCLUDED.name
                                RETURNING id
-                               """, (loc.id, loc.name, loc.region_id))
+                               """, (loc.name, loc.region_id))
         db_location_id = self.db.cursor.fetchone()[0]
     
         # adds the location area
         self.db.cursor.execute("""
-                               INSERT INTO location_areas (api_id, name, location_id)
-                               VALUES (%s, %s, %s)
-                               ON CONFLICT (api_id) DO UPDATE SET name = EXCLUDED.name
+                               INSERT INTO location_areas (name, location_id)
+                               VALUES (%s, %s)
+                               ON CONFLICT (name, location_id) DO UPDATE SET name = EXCLUDED.name
                                RETURNING id
-                               """, (area.id, area.name, db_location_id))
+                               """, (area.name, db_location_id))
         db_area_id = self.db.cursor.fetchone()[0]
     
         # inserts the encounter levels

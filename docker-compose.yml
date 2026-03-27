@@ -21,7 +21,6 @@ services:
       dockerfile: Dockerfile
     container_name: nuzlucke-loader
     env_file: .env
-    profiles: ["init"]
     environment:
       - DOCKER_CONTAINER=true
       - DB_HOST=db

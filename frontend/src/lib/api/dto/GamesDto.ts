@@ -4,6 +4,14 @@ export type GamesDto = {
   platform: string;
   generationsIncluded: number[];
   isRomHack: boolean;
+  rulesetId: number;
+  regionName: string;
+  description: string;
+  isRomHackOf: string;
+  hasFakemon: boolean;
+  difficultyLevel: string;
+  alternateForms: string;
+  qolFeatures: string[];
   releaseDate: {
     releaseDateEu: string | null;
     releaseDateJp: string | null;
