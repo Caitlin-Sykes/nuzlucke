@@ -88,15 +88,46 @@ CREATE TABLE IF NOT EXISTS milestones (
                             id SERIAL PRIMARY KEY,
                             game_id INT REFERENCES games(id),
                             stage_name VARCHAR(100) NOT NULL,
-                            trainer_name VARCHAR(100),
                             level_cap INT NOT NULL,
                             order_index INT NOT NULL,
-                            is_major_boss BOOLEAN DEFAULT TRUE,
                             game_slug VARCHAR(50),
-                            unlocks_surf VARCHAR(50) DEFAULT NULL,
+                            unlocks_surf BOOLEAN DEFAULT FALSE,
+                            has_fishing_rod BOOLEAN DEFAULT FALSE,
                             CONSTRAINT uq_game_order_index UNIQUE (game_id, order_index)
 );
 
+-- -- Trainers you can fight in a stage
+CREATE TABLE IF NOT EXISTS milestone_trainers (
+                                    id SERIAL PRIMARY KEY,
+                                    stage_id INTEGER REFERENCES milestones(id),
+                                    trainer_name VARCHAR(100) NOT NULL, -- 'Brock', 'Camper Liam'
+                                    is_major_boss BOOLEAN DEFAULT FALSE,
+                                    condition VARCHAR(100)             -- 'bulbasaur' (if encounter changes based on starter)
+
+);
+-- -- Teams (The actual Pokemon in the party)
+CREATE TABLE IF NOT EXISTS milestone_teams (
+                                 id SERIAL PRIMARY KEY,
+                                 trainer_id INTEGER REFERENCES milestone_trainers(id),
+                                 pokemon_slug VARCHAR(50) NOT NULL,  -- 'geodude', 'onix'
+                                 slot_number INTEGER NOT NULL,      -- 1, 2, 3
+                                 level INTEGER NOT NULL,
+                                 is_ace BOOLEAN DEFAULT FALSE,
+                                 moves TEXT[],                      -- ARRAY['tackle', 'screech']
+                                 ability VARCHAR(50)                -- For later gens
+);
+
+CREATE TABLE IF NOT EXISTS pokemon_learnsets (
+    id SERIAL PRIMARY KEY,
+    game_slug VARCHAR(50) NOT NULL, -- Matches PokéAPI version-group
+    pokemon_slug VARCHAR(50) NOT NULL,
+    move_name VARCHAR(50),
+    level_learned INT,
+    UNIQUE (pokemon_slug, game_slug, move_name, level_learned)
+);
+
+CREATE INDEX IF NOT EXISTS idx_pokemon_move_lookup
+ON pokemon_learnsets (pokemon_slug, game_slug);
     -- -- -- Used to store encounters for milestones.
 -- -- -- -- ie, what routes you can get to before a badge
 -- CREATE TABLE milestone_encounters (
@@ -111,6 +142,7 @@ CREATE TABLE IF NOT EXISTS milestones (
 --                                       CONSTRAINT unique_encounter_per_game UNIQUE (milestone_id, location_area_id)
 -- );
 
+
 -- -- methods of encountering pokemon
 CREATE TABLE IF NOT EXISTS encounter_methods (
                                    id SERIAL PRIMARY KEY,
@@ -120,27 +152,9 @@ CREATE TABLE IF NOT EXISTS encounter_methods (
 
 
 -- 
--- -- Trainers you can fight in a stage
--- CREATE TABLE IF NOT EXISTS milestone_trainers (
---                                     id SERIAL PRIMARY KEY,
---                                     stage_id INTEGER REFERENCES milestone_stages(id),
---                                     trainer_name VARCHAR(100) NOT NULL, -- 'Brock', 'Camper Liam'
---                                     is_major_boss BOOLEAN DEFAULT FALSE,
---                                     internal_label VARCHAR(100),      
---                                     condition VARCHAR(100)             -- 'bulbasaur' (if encounter changes based on starter)
--- );
+
 -- 
--- -- Teams (The actual Pokemon in the party)
--- CREATE TABLE IF NOT EXISTS milestone_teams (
---                                  id SERIAL PRIMARY KEY,
---                                  trainer_id INTEGER REFERENCES milestone_trainers(id),
---                                  pokemon_slug VARCHAR(50) NOT NULL,  -- 'geodude', 'onix'
---                                  slot_number INTEGER NOT NULL,      -- 1, 2, 3
---                                  level INTEGER NOT NULL,
---                                  is_ace BOOLEAN DEFAULT FALSE,
---                                  moves TEXT[],                      -- ARRAY['tackle', 'screech']
---                                  ability VARCHAR(50)                -- For later gens
--- );
+
 -- 
 
 

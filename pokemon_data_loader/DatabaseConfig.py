@@ -4,6 +4,7 @@ from utils.models import Config
 
 
 class DatabaseConfig:
+    """ Handles the database connection and cursor."""
     _instance = None
     
     def __new__(cls):
