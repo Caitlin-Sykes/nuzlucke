@@ -47,12 +47,14 @@ if __name__ == "__main__":
             master_starters = []
 
             final_slug = bulb_parser.get_game_slug(target_url)
+            logger.debug(f"Game slug is: {final_slug}")
 
             if pages:
+                logger.debug(f"List of pages {pages}")
                 for page_title, page_url in pages.items():
                     logger.info(f"Processing: {page_title}")
 
-                    #Extract data using Orchestrator (save_to_db=False so we can consolidate)
+                    #Extract data using Orchestrator
                     p_milestones, p_starters, p_cap = get_data_from_page(page_url, save_to_db=False)
 
                     master_milestones.extend(p_milestones)

@@ -72,6 +72,7 @@ class BattleParser:
         # Gets the name of the trainer
         name_div = container.find("div", class_="partyname")
         trainer_name = name_div.get_text(strip=True) if name_div else "Unknown"
+        self.logger.debug(f"The name of the trainer is {trainer_name}")
         self.logger.debug(f"<< _get_trainer_name")
         return trainer_name, is_major_boss
 

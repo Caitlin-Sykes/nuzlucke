@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def get_data_from_page(url, save_to_db=True):
     logger.debug(f">> get_data_from_page: {url}")
 
-    # Initialize necessary services
+    # Initialise necessary services
     scraper = WebScrapingUtils()
     move_service = MoveService()
     bulb_parser = BulbapediaParser(move_service)
@@ -50,12 +50,13 @@ def get_data_from_page(url, save_to_db=True):
         prefix = bulb_parser.get_trainer_prefix(node) if node else "Major Battle"
         t_name = rival['trainer_name']
         target_milestone_name = f"{prefix}: {t_name}"
-
+        logger.debug(f"The target milestone is {target_milestone_name} and the trainer is {t_name}")
         # Try to attach the boss to an existing milestone (e.g., Brock to Pewter City)
         found_home = False
         for milestone in all_milestones:
             m_name = milestone['milestone_name'].lower()
             if t_name.lower() in m_name or "gym" in m_name:
+                logger.debug(f"Milestone: {target_milestone_name} for trainer")
                 milestone['trainers'].append(rival)
                 milestone['milestone_name'] = target_milestone_name
                 found_home = True

@@ -2,9 +2,6 @@ import logging
 import re
 from urllib.parse import unquote
 
-import requests
-import DatabaseConfig
-
 class BulbapediaParser:
     """Has data parsing utilities for bulbapedia
     these will not scrape pages themselves"""
@@ -127,7 +124,7 @@ class BulbapediaParser:
 
             if pk_link:
                 pk_name = pk_link.get_text(strip=True)
-                pk_slug = pk_name.lower().replace(" ", "-").replace(".", "").replace("♂", "-m").replace("♀", "-f")
+                pk_slug = pk_name.lower().replace(" ", "-").replace(".", "").replace("♂", "-m").replace("♀", "-f").replace("'","-")
                 lvl_text = pokemon_cell.get_text()
                 lvl_match = re.search(r'Lv\.?\s*(\d+)', lvl_text)
                 level = int(lvl_match.group(1)) if lvl_match else 0
@@ -178,10 +175,10 @@ class BulbapediaParser:
 
         decoded_url = unquote(url)
 
-        # Pattern 1: Look for Walkthrough:Pokémon_Name
+        #Look for Walkthrough:Pokémon_Name
         match = re.search(r'Walkthrough:Pokémon_([^/]+)', decoded_url)
 
-        # Pattern 2: Look for Category:Name_walkthrough
+        # Look for Category:Name_walkthrough
         if not match:
             match = re.search(r'Category:([^/]+)_walkthrough', decoded_url)
 

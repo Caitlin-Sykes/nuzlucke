@@ -45,13 +45,37 @@ class WebScrapingUtils:
         try:
 
             # Tries to get a container containing all walkthrough links
+            # Sometimes its a div, sometimes it is a table
             category_container = content.find("div", id="mw-pages")
+            category_table = content.find("table", class_="roundy")
+
             if category_container:
-                self.logger.info(f"Detected Category page: {target_url}")
+                self.logger.info(f"Detected Category Container: {target_url}")
                 walkthrough_links = {}
 
                 # Find all links in the category
                 for link in category_container.find_all("a"):
+                    # Remove things like /n
+                    raw_title = link.get_text().strip()
+
+                    # Fix the 'é' issue: Replace the accented 'é' with 'e'
+                    clean_title = raw_title.replace('é', 'e')
+
+                    # Filter out the main walkthrough page if needed
+                    if "Part" in clean_title or "Walkthrough" in clean_title:
+                        relative_path = link.get("href")
+                        full_url = urljoin(base_url, relative_path)
+                        walkthrough_links[clean_title] = full_url
+
+                self.logger.info(f"Found {len(walkthrough_links)} links")
+                return walkthrough_links
+
+            elif category_table and "Part" not in target_url:
+                self.logger.info(f"Detected Category Table: {target_url}")
+                walkthrough_links = {}
+
+                # Find all links in the category
+                for link in category_table.find_all("a"):
                     # Remove things like /n
                     raw_title = link.get_text().strip()
 
