@@ -29,6 +29,11 @@ class MoveService:
         if not data:
             try:
                 self.logger.info(f"Fetching API data for {pokemon_slug} ({game_slug})...")
+
+                # TODO: make neater
+                if pokemon_slug == "farfetch-d":
+                    pokemon_slug="farfetchd"
+
                 resp = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_slug}")
                 resp.raise_for_status()
                 api_data = resp.json()
