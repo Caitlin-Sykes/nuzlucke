@@ -2,7 +2,7 @@
 # This is the page that will be scraped
 # You can either point it at a specific page (like part 1 of a walk through)
 # or at a group of pages, ie, contains links to all parts of a walkthrough
-page_to_scrape = "https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Gold_and_Silver"
+page_to_scrape = "https://bulbapedia.bulbagarden.net/wiki/Walkthrough:Pok%C3%A9mon_Crystal"
 
 [logging]
 logging_level = "DEBUG"

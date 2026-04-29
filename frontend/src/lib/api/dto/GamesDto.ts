@@ -1,17 +1,9 @@
 export type GamesDto = {
   name: string;
-  creator: string;
   platform: string;
   generationsIncluded: number[];
-  isRomHack: boolean;
   rulesetId: number;
-  regionName: string;
-  description: string;
-  isRomHackOf: string;
-  hasFakemon: boolean;
-  difficultyLevel: string;
-  alternateForms: string;
-  qolFeatures: string[];
+  isRomHack: boolean;
   releaseDate: {
     releaseDateEu: string | null;
     releaseDateJp: string | null;
@@ -19,10 +11,24 @@ export type GamesDto = {
     releaseDateUs: string | null;
   };
   credits: {
-    imageCredits: string | null;
-    imageRights: string | null;
-    imageUrl: string | null;
+    gameRights: string | null;
+    gameCreator: string | null;
   };
+  illustration: {
+    imageUrl: string | null;
+    imageAuthor: string | null;
+    imageRights: string | null;
+    imageSource: string | null;
+  };
+  regionName: string;
+  description: string;
+  isRomHackOf: string;
+  hasFakemon: boolean;
+  difficultyLevel: string;
+  alternateForms: string;
+  qolFeatures: string[];
+
+
 };
 
 const API_BASE = '/nuzlucke';

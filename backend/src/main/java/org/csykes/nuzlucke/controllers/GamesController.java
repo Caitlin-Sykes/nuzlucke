@@ -2,6 +2,7 @@ package org.csykes.nuzlucke.controllers;
 
 import org.csykes.nuzlucke.dto.GamesDto;
 import org.csykes.nuzlucke.entity.GamesEntity;
+import org.csykes.nuzlucke.mapper.GamesMapper;
 import org.csykes.nuzlucke.repository.GamesRepository;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class GamesController {
     public List<GamesDto> getAvailableGames() {
         Sort sort = Sort.sort(GamesEntity.class).by(GamesEntity::getId).ascending();
         return gamesRepository.findByIsDlcFalseOrIsDlcIsNull(sort).stream()
-                .map(GamesDto::fromEntity)
+                .map(GamesMapper::toDto)
                 .toList();
     }
 
