@@ -1,5 +1,5 @@
 from .BaseRepository import BaseRepository
-from utils.Constants import SURF_MILESTONE
+from utils.Constants import SURF_MILESTONE, GAME_ID_TO_MILESTONE_SLUG
 
 
 class EncounterRepository(BaseRepository):
@@ -42,7 +42,12 @@ class EncounterRepository(BaseRepository):
         :param game_id: The ID of the game to map encounters for
         """
         self.logger.debug(f">> map_encounters_to_milestones for game {game_id}")
-    
+
+        milestone_slug = GAME_ID_TO_MILESTONE_SLUG.get(game_id)
+        if milestone_slug is None:
+            self.logger.warning(f"No milestone slug configured for game {game_id}. Skipping encounter mapping.")
+            return
+
         sql = """
               INSERT INTO milestone_encounters (milestone_id, location_area_id)
               WITH AreaMaxLevels AS (
@@ -60,7 +65,7 @@ class EncounterRepository(BaseRepository):
                   m.id as milestone_id,
                   aml.location_area_id
               FROM AreaMaxLevels aml
-                       JOIN milestones m ON m.game_id = %s
+                       JOIN milestones m ON m.game_slug = %s
               -- compare with our milestone levels to see where it falls
               WHERE aml.area_max_lvl <= m.level_cap
               -- pick the first one so they don't overmatch
@@ -69,7 +74,7 @@ class EncounterRepository(BaseRepository):
               """
     
         try:
-            self.db.cursor.execute(sql, (game_id, game_id))
+            self.db.cursor.execute(sql, (game_id, milestone_slug))
             self.db.conn.commit()
             self.logger.debug("<< map_encounters_to_milestones")
         except Exception as e:
@@ -92,29 +97,29 @@ class EncounterRepository(BaseRepository):
               SELECT m.id, la.id, TRUE
               FROM (VALUES
                         -- Blocked by Pewter Guard (Move from Gym 1 guess to Gym 2)
-                        ('kanto-route-3-area', 'Cerulean City - Gym 2'),
-                        ('mt-moon-1f', 'Cerulean City - Gym 2'),
-                        ('mt-moon-b1f', 'Cerulean City - Gym 2'),
-                        ('mt-moon-b2f', 'Cerulean City - Gym 2'),
-                        ('kanto-route-4-area', 'Cerulean City - Gym 2'),
+                        ('kanto-route-3-area', 'Gym Leader: Misty'),
+                        ('mt-moon-1f', 'Gym Leader: Misty'),
+                        ('mt-moon-b1f', 'Gym Leader: Misty'),
+                        ('mt-moon-b2f', 'Gym Leader: Misty'),
+                        ('kanto-route-4-area', 'Gym Leader: Misty'),
     
                         -- Accessible only after Mt. Moon / Misty
-                        ('kanto-route-24-area', 'Cerulean City - Gym 2'),
-                        ('kanto-route-25-area', 'Cerulean City - Gym 2'),
-                        ('kanto-route-5-area', 'Cerulean City - Gym 2'),
+                        ('kanto-route-24-area', 'Gym Leader: Misty'),
+                        ('kanto-route-25-area', 'Gym Leader: Misty'),
+                        ('kanto-route-5-area', 'Gym Leader: Misty'),
     
                         -- Blocked by HM Cut (Requires Gym 2 Badge to use outside)
-                        ('kanto-route-9-area', 'Vermillion City - Gym 3'),
-                        ('kanto-route-10-area', 'Vermillion City - Gym 3'),
-                        ('rock-tunnel-1f', 'Vermillion City - Gym 3'),
-                        ('rock-tunnel-b1f', 'Vermillion City - Gym 3'),
+                        ('kanto-route-9-area', 'Gym Leader: Lt. Surge'),
+                        ('kanto-route-10-area', 'Gym Leader: Lt. Surge'),
+                        ('rock-tunnel-1f', 'Gym Leader: Lt. Surge'),
+                        ('rock-tunnel-b1f', 'Gym Leader: Lt. Surge'),
     
                         -- Blocked by Snorlax (Requires Poke Flute after Gym 4)
-                        ('kanto-route-12-area', 'Fuchsia City - Gym 5'),
-                        ('kanto-route-16-area', 'Fuchsia City - Gym 5'),
-                        ('kanto-route-13-area', 'Fuchsia City - Gym 5'),
-                        ('kanto-route-14-area', 'Fuchsia City - Gym 5'),
-                        ('kanto-route-15-area', 'Fuchsia City - Gym 5')
+                        ('kanto-route-12-area', 'Gym Leader: Koga'),
+                        ('kanto-route-16-area', 'Gym Leader: Koga'),
+                        ('kanto-route-13-area', 'Gym Leader: Koga'),
+                        ('kanto-route-14-area', 'Gym Leader: Koga'),
+                        ('kanto-route-15-area', 'Gym Leader: Koga')
                    ) AS t(area_name, milestone_name)
                        JOIN location_areas la ON la.name = t.area_name
                        JOIN milestones m ON m.stage_name = t.milestone_name
@@ -144,7 +149,7 @@ class EncounterRepository(BaseRepository):
               UPDATE milestones
               SET unlocks_surf = TRUE
               WHERE stage_name = %s
-                AND game_id = (SELECT id FROM games WHERE name = %s); \
+                AND game_slug = %s; \
               """
     
         try:

@@ -28,13 +28,13 @@ if __name__ == "__main__":
 
 
     logger.info("Starting the Pokemon Game Sync...")
-    manager.sync_pokemon_games()
+    # manager.sync_pokemon_games()
     logger.info("Syncing Pokemon Games completed successfully!")
     
     logger.info("Starting the Pokemon Info Sync...")
-    manager.sync_pokemon_info()
+    # manager.sync_pokemon_info()
     logger.info("Syncing Pokemon Info completed successfully!")
-    
+    # todo: make these features toggleable
     logger.info("Starting the Pokemon Encounter Sync...")
     manager.sync_pokemon_encounters()
     logger.info("Syncing Pokemon Encounters completed successfully!")

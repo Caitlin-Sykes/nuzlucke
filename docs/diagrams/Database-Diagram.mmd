@@ -116,14 +116,13 @@ erDiagram
 
 	MILESTONES["&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMILESTONES<br/>Represents certain stages of the game."] {
 		serial id "PK"
-        int game_id "REFERENCES games(id)"
         varchar(100) stage_name "NOT NULL"
         int level_cap "NOT NULL"
         int order_index "NOT NULL"
         varchar(50) game_slug
         varchar(50) unlocks_surf "BOOLEAN DEFAULT FALSE"
         varchar(50) has_fishing_rod "BOOLEAN DEFAULT FALSE"
-        UNIQUE_CONSTRAINT uq_game_order_index "UNIQUE(game_id, order_index)"
+        UNIQUE_CONSTRAINT uq_game_order_index "UNIQUE(game_slug,order_index)"
 	}
 
 		MILESTONES_TRAINER["&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMILESTONE_TRAINERS<br/>Represents trainers for the stages."] {
@@ -131,17 +130,17 @@ erDiagram
         INTEGER stage_id "REFERENCES milestones(id)"
 		VARCHAR(100) trainer_name  "NOT NULL, -- 'Brock', 'Camper Liam'"
         BOOLEAN is_major_boss  "DEFAULT FALSE"
-        VARCHAR(100) condition  "NULLABLE"
 	}
 	MILESTONES_TEAM["&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspMILESTONE_TEAMS<br/>Represents teams for the trainers."] {
 		serial id "PK"
         INTEGER trainer_id  "REFERENCES milestone_trainers(id)"
-		VARCHAR(50) pokemon_slug "NOT NULL"
+		VARCHAR(50) pokemon_slug "NOT NULL"  
         INTEGER slot_number  "NOT NULL"
         INTEGER level "NOT NULL"
         BOOLEAN is_ace  "DEFAULT FALSE"
-        TEXT[] moves
-        VARCHAR(50) ability
+        TEXT[] moves               
+        VARCHAR(50) ability   
+		VARCHAR(100) condition  "NULLABLE"
 	}
 
 	ENCOUNTER_METHODS["&nbsp&nbsp&nbsp&nbsp&nbspENCOUNTER_METHODS<br/>Ways you can encounter Pokemon"] {
@@ -160,7 +159,7 @@ erDiagram
         int max_level INTEGER
         UNIQUE_CONSTRAINT unique_pokemon_encounter_entry "UNIQUE (game_id, location_id, location_area_id, pokemon_id, method)"
 	}
-
+                           
 
 	%% Relationships
 	RULESET||--o{GAMES:"defines rules for"

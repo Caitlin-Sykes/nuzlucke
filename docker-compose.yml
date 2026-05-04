@@ -12,7 +12,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - nuzlucke-data:/var/lib/postgresql/data
+      - nuzlucke-data:/var/lib/postgresql
       - ./database/queries/init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
       - ./database/queries:/schema_files:ro #marked as readonly so they can't be tampered with
   loader:

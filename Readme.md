@@ -15,6 +15,7 @@
 
 ## Build Steps
 ### Prod
+  - rename .env.example to .env, and change the username and password settings to something you want.
   - in the root folder, run ```docker compose up --build```
 
 ### Local Development
@@ -54,6 +55,28 @@
 - style cards after pokemon cards
 - add game/romhack description
 - TODO:FIX THE BACKEND
+
+## Supported Games
+- Red/Blue/Yellow
+- Gold/Silver/Crystal
+- Ruby/Sapphire/Emerald
+- Colloseum
+- XD: Gales of Darkness
+- Diamond/Pearl/Platinum
+- HeartGold/SoulSilver
+- Black/White
+- Black2/White2
+- X/Y
+- Omega Ruby/Alpha Sapphire
+- Sun/Moon
+- Ultra Sun/Ultra Moon
+- Lets Go Pikachu/Lets go Eevee
+- Sword/Shield
+- Scarlet/Violet
+- Legends Arceus
+- Legends ZA
+- Pokemon Insurgence
+
 ## Credits
 - [PokeAPI](https://pokeapi.co/) - for the data I populate the db with
 - [Serebii](https://www.serebii.net/) – For being a resource of knowledge to cross-reference against

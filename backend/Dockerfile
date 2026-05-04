@@ -1,15 +1,19 @@
-FROM amazoncorretto:21.0.11-alpine AS build
+FROM maven:3.9.11-amazoncorretto-21-alpine AS build
 
 #Sets the directory for docker to store stuff in
 WORKDIR /backend
 
 COPY pom.xml .
 COPY src ./src
-COPY .mvn/ ./.mvn
-COPY mvnw pom.xml ./
 
-# Build the jar
-RUN ./mvnw clean package -DskipTests
+# Cache Dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src ./src
+
+#Build the jar
+RUN mvn clean package -DskipTests
 
 FROM amazoncorretto:21.0.11-alpine
 WORKDIR /backend

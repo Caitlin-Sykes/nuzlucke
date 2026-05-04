@@ -50,16 +50,18 @@ GROUP_TO_RULESET = {
 # available to the player
 # this is also used to map the surfing
 #ABILITY not just the move
+# TODO: verify Sun and Moon structures as well as ScarVi
 SURF_MILESTONE = {
-    "Fuchsia City - Gym 5": ["red", "blue", "yellow", "firered", "leafgreen", "lets-go-pikachu", "lets-go-eevee"],
-    "Ecruteak City - Gym 4": ["gold", "silver", "crystal", "heartgold", "soulsilver"],
-    "Petalburg City - Gym 5": ["ruby", "sapphire", "emerald", "omega-ruby", "alpha-sapphire"],
-    "Hearthome City - Gym 5": ["diamond", "pearl", "platinum", "brilliant-diamond", "shining-pearl"],
-    "Mistralton City - Gym 6": ["black", "white"],
-    "Driftveil City - Gym 5": ["black-2", "white-2"],
-    "Shalour City - Gym 3": ["x", "y"],
-    "Brooklet Hill - Lana Trial": ["sun", "moon", "ultra-sun", "ultra-moon"],
-    "Circhester Stadium - Gym 6": ["sword", "shield"],
+    "Gym Leader: Koga": ["red", "blue", "yellow", "firered", "leafgreen", "lets-go-pikachu", "lets-go-eevee"],
+    "Gym Leader: Morty": ["gold", "silver", "crystal", "heartgold", "soulsilver"],
+    "Gym Leader: Norman": ["ruby", "sapphire", "emerald", "omega-ruby", "alpha-sapphire"],
+    "Gym Leader: Fantina": ["diamond", "pearl", "platinum", "brilliant-diamond", "shining-pearl"],
+    "Gym Leader: Skyla": ["black", "white"],
+    "Gym Leader: Clay": ["black-2", "white-2"],
+    "Gym Leader: Korrina": ["x", "y"],
+    "Gym Leader: Lana": ["sun", "moon", "ultra-sun", "ultra-moon"],
+    "Gym Leader: Gordie": ["sword"],
+    "Gym Leader: Melony": ["shield"],
     "West Province (Area One) - Open Sky Titan": ["scarlet", "violet"]
 }
 
@@ -139,7 +141,73 @@ GAME_METADATA = [
     {"slug": "mega-dimension", "jp": "2025-12-10", "us": "2025-12-10", "eu": "2025-12-10", "au": "2025-12-10", "platform": SWITCH, "gens": (1, 2, 3, 4, 5, 6, 7, 8, 9),"is_dlc":True}
 ]
 
+# This is used for mapping game IDs to milestone slugs
+# ie, game 1 is Pokemon red, so is mapped to the slug red-blue
+# as they share the same map, pokes, etc
+GAME_ID_TO_MILESTONE_SLUG = {
+    # Generation 1
+    1: "red-blue",
+    2: "red-blue",
+    3: "yellow",
 
+    # Generation 2
+    4: "gold-silver",
+    5: "gold-silver",
+    6: "crystal",
+
+    # Generation 3
+    7:"ruby-sapphire",
+    8:"ruby-sapphire",
+    9:"emerald",
+    10:"fire-red-leaf-green",
+    11:"fire-red-leaf-green",
+    19:"colosseum",
+    20:"Xd",
+
+    # Generation 4
+    12: "diamond-pearl",
+    13: "diamond-pearl",
+    14: "platinum",
+    15: "heartgold-soulsilver",
+    16: "heartgold-soulsilver",
+
+    # Generation 5
+    17: "black-white",
+    18: "black-white",
+    21: "black2-white2",
+    22: "black2-white2",
+
+    # Generation 6
+    23: "x-y",
+    24: "x-y",
+    25: "omega-ruby-alpha-sapphire",
+    26: "omega-ruby-alpha-sapphire",
+
+    # Generation 7
+    27: "sun-moon",
+    28: "sun-moon",
+    29: "ultra-sun-ultra-moon",
+    30: "ultra-sun-ultra-moon",
+    31: "lets-go-pikachu-lets-go-eevee",
+    32: "lets-go-pikachu-lets-go-eevee",
+
+    # Generation 8
+    33: "sword-shield",
+    34: "sword-shield",
+    35: "sword-shield",
+    36: "sword-shield",
+    37: "brilliant-diamond-shining-pearl",
+    38: "brilliant-diamond-shining-pearl",
+    39: "legends-arceus",
+
+    # Generation 9
+    40: "scarlet-violet",
+    41: "scarlet-violet",
+    42: "scarlet-violet",
+    43: "scarlet-violet",
+    47: "legends-za",
+    48: "legends-za",
+}
 
 
 
