@@ -1,0 +1,256 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="HCcLUevSrupyPXyCux3K">
+    <mxGraphModel dx="1178" dy="658" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="HhaxSh088sFNb-mkVozb-1" parent="1" style="whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF,#FFCC26);" value="" vertex="1">
+          <mxGeometry height="280" width="160" x="120" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-4" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=light-dark(#FFFFFF,#FF0000);" value="" vertex="1">
+          <mxGeometry height="265" width="151.43" x="124.28999999999999" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-5" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;GAME TITLE&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="124.29000000000002" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-6" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;GEN: 1 [ICN]&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="215.72" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="82.5" width="120" x="140" y="517.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-9" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="HhaxSh088sFNb-mkVozb-6" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="139.29" y="600" as="sourcePoint" />
+            <mxPoint x="189.29" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-10" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="260.86" y="600" as="sourcePoint" />
+            <mxPoint x="139.15" y="518" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-11" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;GAME&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 8px;&quot;&gt;COVER&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="50" x="175" y="512.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-12" parent="1" style="rounded=0;whiteSpace=wrap;html=1;gradientColor=#FFFFFF80;gradientDirection=radial;strokeColor=light-dark(default, #ffffff);" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Platform: Platform&lt;/font&gt;" vertex="1">
+          <mxGeometry height="15" width="120" x="140" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-13" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[ICN] Creator:&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="124.28999999999999" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-14" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;strokeWidth=1;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Creator Name&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="120" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-15" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[ICN] Description&lt;/font&gt;&lt;span style=&quot;font-size: 8px; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;:&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="124.28999999999999" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-16" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Description&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="120" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-19" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;endSize=6;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="145" y="656" as="sourcePoint" />
+            <mxPoint x="255" y="656" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-22" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;endSize=6;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="145" y="690" as="sourcePoint" />
+            <mxPoint x="255" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-23" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#FF0000CC,#000000CC);" value="" vertex="1">
+          <mxGeometry height="40" width="140" x="130" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-25" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Rom Hack&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="50" x="125" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-26" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;X&lt;/font&gt;" vertex="1">
+          <mxGeometry height="10" width="10" x="145" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-27" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Included Gens&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="170" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-28" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Region&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="40" x="230" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-29" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;1&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="30" x="185.72" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-30" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Kanto&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="40" x="230" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-31" parent="1" style="whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF,#FFCC26);" value="" vertex="1">
+          <mxGeometry height="280" width="160" x="360" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-32" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#7EA6E0;" value="" vertex="1">
+          <mxGeometry height="265" width="151.43" x="364.28999999999996" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-33" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;GAME TITLE&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="364.29" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-34" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;GEN: 1 [ICN]&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="455.72" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-35" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="82.5" width="120" x="380" y="517.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-36" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="HhaxSh088sFNb-mkVozb-34" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="379.28999999999996" y="600" as="sourcePoint" />
+            <mxPoint x="429.28999999999996" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-37" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="500.86" y="600" as="sourcePoint" />
+            <mxPoint x="379.15" y="518" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-38" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;GAME&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 8px;&quot;&gt;COVER&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="50" x="415" y="512.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-39" parent="1" style="rounded=0;whiteSpace=wrap;html=1;gradientColor=#FFFFFF80;gradientDirection=radial;strokeColor=light-dark(default, #ffffff);" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Platform: Platform&lt;/font&gt;" vertex="1">
+          <mxGeometry height="15" width="120" x="380" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-40" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[ICN] Creator:&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="364.28999999999996" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-41" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;strokeWidth=1;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Creator Name&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="360" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-42" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[ICN] Description&lt;/font&gt;&lt;span style=&quot;font-size: 8px; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;:&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="364.28999999999996" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-43" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Description&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="360" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-44" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;endSize=6;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="385" y="656" as="sourcePoint" />
+            <mxPoint x="495" y="656" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-45" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;endSize=6;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="385" y="690" as="sourcePoint" />
+            <mxPoint x="495" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-46" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFFCC,#121111CC);" value="" vertex="1">
+          <mxGeometry height="40" width="140" x="370" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-47" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Rom Hack&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="50" x="365" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-48" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;X&lt;/font&gt;" vertex="1">
+          <mxGeometry height="10" width="10" x="385" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-49" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Included Gens&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="410" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-50" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Region&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="40" x="470" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-51" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;1&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="30" x="425.72" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-52" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Kanto&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="40" x="470" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-53" parent="1" style="whiteSpace=wrap;html=1;fillColor=light-dark(#FFFFFF,#FFCC26);" value="" vertex="1">
+          <mxGeometry height="280" width="160" x="600" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-54" parent="1" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=light-dark(#A680B8,#A680B8);" value="" vertex="1">
+          <mxGeometry height="265" width="151.43" x="604.29" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-55" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;GAME TITLE&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="604.29" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-56" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;GEN: 1 [ICN]&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="695.72" y="487.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-57" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="82.5" width="120" x="620" y="517.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-58" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="HhaxSh088sFNb-mkVozb-56" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="619.29" y="600" as="sourcePoint" />
+            <mxPoint x="669.29" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-59" edge="1" parent="1" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="740.86" y="600" as="sourcePoint" />
+            <mxPoint x="619.15" y="518" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-60" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;GAME&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;font-size: 8px;&quot;&gt;COVER&lt;/font&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="50" x="655" y="512.5" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-61" parent="1" style="rounded=0;whiteSpace=wrap;html=1;gradientColor=#FFFFFF80;gradientDirection=radial;strokeColor=light-dark(default, #ffffff);" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Platform: Platform&lt;/font&gt;" vertex="1">
+          <mxGeometry height="15" width="120" x="620" y="605" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-62" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[ICN] Creator:&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="604.29" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-63" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;strokeWidth=1;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Creator Name&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="600" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-64" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;[ICN] Description&lt;/font&gt;&lt;span style=&quot;font-size: 8px; background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;:&lt;/span&gt;" vertex="1">
+          <mxGeometry height="30" width="80" x="604.29" y="650" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-65" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Description&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="160" x="600" y="660" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-66" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;endSize=6;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="625" y="656" as="sourcePoint" />
+            <mxPoint x="735" y="656" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-67" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;endSize=6;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="625" y="690" as="sourcePoint" />
+            <mxPoint x="735" y="690" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-68" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="" vertex="1">
+          <mxGeometry height="40" width="140" x="610" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-69" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Rom Hack&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="50" x="605" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-70" parent="1" style="rounded=0;whiteSpace=wrap;html=1;" value="&lt;font style=&quot;font-size: 7px;&quot;&gt;X&lt;/font&gt;" vertex="1">
+          <mxGeometry height="10" width="10" x="625" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-71" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Included Gens&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="60" x="650" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-72" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 6px;&quot;&gt;Region&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="40" x="710" y="706" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-73" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 9px;&quot;&gt;1&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="30" x="665.72" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-74" parent="1" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;autosize=1;resizable=0;" value="&lt;font style=&quot;font-size: 8px;&quot;&gt;Kanto&lt;/font&gt;" vertex="1">
+          <mxGeometry height="30" width="40" x="710" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-75" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="NUZLUCKE |||&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;New Game : Load Game : Settings" vertex="1">
+          <mxGeometry height="60" width="320" x="280" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-76" edge="1" parent="1" style="endArrow=none;html=1;rounded=0;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="80" y="240" as="sourcePoint" />
+            <mxPoint x="770" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="HhaxSh088sFNb-mkVozb-77" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="[SEARCH]&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="400" x="240" y="380" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
