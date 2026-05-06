@@ -6,6 +6,11 @@
       "load_games_fail": "Couldn’t load games",
       "waiting": "Loading games…"
     },
+    "nav": {
+      "new": "New Game",
+      "load": "Load Game",
+      "settings": "Settings"
+    },
     "available_games": "Available games:"
   },
   "card": {

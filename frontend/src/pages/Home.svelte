@@ -1,8 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Card from '../components/Card.svelte';
-  import { getAvailableGames, type GamesDto } from '../lib/api/dto/GamesDto';
   import * as m from '../generated/paraglide/messages';
+  import Navbar from "../components/Navbar.svelte";
+  import type { GamesDto } from '../generated/api';
+  import { gamesApi } from '../lib/api';
 
   let games: GamesDto[] = [];
   let loading = true;
@@ -16,7 +18,7 @@
     try {
       loading = true;
       error = null;
-      games = await getAvailableGames();
+      games = await gamesApi.getAvailableGames();
     } catch (e) {
       error = e instanceof Error ? e.message : m['errors.noGames']();
     } finally {
@@ -25,10 +27,7 @@
   });
 </script>
 
-<header class="hero">
-  <h1>{m['home.title']()}</h1>
-  <p>{m['home.description']()}</p>
-</header>
+<Navbar/>
 
 <main class="page">
   {#if loading}
@@ -49,10 +48,7 @@
 </main>
 
 <style>
-  .hero {
-    padding: 28px 18px 10px;
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
-  }
+
   h1 { margin: 0 0 6px; font-size: 32px; letter-spacing: -0.02em; }
   p { margin: 0; opacity: 0.85; }
 

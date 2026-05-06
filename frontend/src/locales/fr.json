@@ -6,6 +6,11 @@
       "load_games_fail": "Couldn’t load games",
       "waiting": "Loading games…"
     },
+    "nav": {
+      "new": "New Game",
+      "load": "Load Game",
+      "settings": "Settings"
+    },
     "available_games": "Available games:"
   },
   "card": {
@@ -20,11 +25,17 @@
     "description": "Description",
     "has_fakemon": "Has Fakemon:",
     "qol": "Quality of Life Features:",
-    "difficulty": "Difficulty Level:"
+    "difficulty": "Difficulty Level:",
+    "game_details": "Game Details",
+    "release_date": "Release Date (Europe):",
+    "ruleset_id": "Ruleset ID:",
+    "has_forms": "Alternate Forms:"
   },
   "errors": {
     "noGames": "Failed to load games.",
-    "description": "Description not found."
+    "description": "Description not found.",
+    "no_difficulty": "Difficulty level not found.",
+    "none": "None"
   },
   "actions": {
     "retry": "Retry"

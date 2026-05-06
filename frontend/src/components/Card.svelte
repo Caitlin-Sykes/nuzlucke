@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type {GamesDto} from '../lib/api/dto/GamesDto';
     import * as m from '../generated/paraglide/messages';
     import Info from '~icons/solar/info-square-bold';
     import Circle from '~icons/solar/bolt-circle-bold';
     import Check from '~icons/solar/check-square-line-duotone';
     import Cross from '~icons/solar/close-square-line-duotone';
+    import type {GamesDto} from "../generated/api";
 
     export let game: GamesDto;
     export let onSelect: (game: GamesDto) => void;
@@ -102,8 +102,8 @@
 
             <div class="card__stage">
                 <div class="illustration-container">
-                    {#if game.credits?.imageUrl}
-                        <img class="illustration" src={`/nuzlucke${game.credits.imageUrl}`} alt={game.name} />
+                    {#if game.illustration?.imageUrl}
+                        <img class="illustration" src={`/nuzlucke${game.illustration.imageUrl}`} alt={game.name} />
                     {:else}
                         <div class="illustration-placeholder">
                             <Info width="48" height="48" />
@@ -122,7 +122,7 @@
                         <Circle class="cost-icon" />
                         <span class="move__name">{m['card.creator']() || 'Creator'}</span>
                     </div>
-                    <div class="move__description">{game.creator || 'Unknown'}</div>
+                    <div class="move__description">{game.credits.gameCreator || 'Unknown'}</div>
                 </div>
 
                 <div class="move">
@@ -192,7 +192,7 @@
                     <div class="features-section">
                         <strong>{m['card.qol']()}</strong>
                         <div class="qol-container">
-                            {#each game.qolFeatures as feature}
+                            {#each game.qolFeatures as feature (feature)}
                                 <span class="qol-chip">
                                     <Circle width="10" height="10" />
                                     {feature}
