@@ -24,6 +24,9 @@ public class GamesEntity {
 
     @Column(nullable = false, length = 100)
     private String name;
+    
+    @Column(name = "milestone_slug", nullable = false, length = 50)
+    private String milestoneSlug;
 
     @Column(name = "ruleset_id", nullable = false)
     private Integer rulesetId;
